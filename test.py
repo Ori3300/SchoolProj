@@ -14,3 +14,6 @@ fig.update_layout(
 )
 
 fig.show()
+
+
+print("Suiiiii")
