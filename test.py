@@ -1,19 +1,22 @@
-import plotly.express as px
+import json
 
-fig = px.scatter_mapbox(
-    lat=[37.7749],
-    lon=[-122.4194],
-    text=["Sample Location"],
-    zoom=12,
-    height=500
-)
+buisness = {
+    "id": 2,
+    "name": "test",
+    "catagory": "food",
+    "owner": "ori",
+    "description": "pizza shop",
+    "comments": [
+    {
+        "user_name": "ori",
+        "content": "love it!"
+    }
+    ]
+}
 
-fig.update_layout(
-    mapbox_style="mapbox://styles/mapbox/streets-v11",
-    mapbox_accesstoken=MAPBOX_ACCESS_TOKEN
-)
+with open("C:\\Users\\user\\Desktop\\SchoolProj\\SchoolProj-1\\DBes\\BuisnessUser.json", 'w') as file:
+    json.dump(buisness, file)
 
-fig.show()
-
-
-print("Suiiiii")
+with open("C:\\Users\\user\\Desktop\\SchoolProj\\SchoolProj-1\\DBes\\BuisnessUser.json", 'r') as file:
+    data = json.load(file)
+    print(data)
