@@ -1,1 +1,12 @@
-{"id": 2, "name": "test", "catagory": "food", "owner": "ori", "description": "pizza shop", "comments": [{"user_name": "ori", "content": "love it!"}]}
+{
+    "1": {
+        "name": "WeShoes",
+        "catagory": "shoes",
+        "owner": "shalev",
+        "description": "ewsrdtyfguhijo",
+        "comments": {
+            "user_name": "ori",
+            "content": "the worst shoes i'v ever seen"
+        }
+    }
+}
