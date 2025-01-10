@@ -27,7 +27,7 @@ def Create_Buisness(name, catagory, owner, description, comments):
 
 
 def Show_db():
-    with open("C:\\Users\\user\\Desktop\\SchoolProj\\SchoolProj-1\\DBes\\BuisnessUser.json", 'r') as file:
+    with open("DBes\\BuisnessUser__Test.json", 'r') as file:
         data = json.load(file)
     return data
 
@@ -35,12 +35,12 @@ def Show_db():
 def write_to_db(buisness):
     data = Show_db()
     data[len(data)+1] = buisness
-    with open("C:\\Users\\user\\Desktop\\SchoolProj\\SchoolProj-1\\DBes\\BuisnessUser.json", 'w') as file:
+    with open("DBes\\BuisnessUser__Test.json", 'w') as file:
         json.dump(data, file, indent=4)
 
 
-#comments = {"user_name": "Shalev", "content": "So delicius"}
-#buisness3 = Create_Buisness(name="Pizzaria", catagory="food", owner="ori", description="xfgdchvjgbhknjm", comments=comments)
+comments = {"user_name": "Shalev", "content": "So delicius"}
+buisness3 = Create_Buisness(name="Pizzaria", catagory="food", owner="ori", description="xfgdchvjgbhknjm", comments=comments)
 
 #write_to_db(buisness3)
 
@@ -49,7 +49,13 @@ def Delete_Buisness_by_name(name):
     for id in list(data.keys()):
         if data[id]["name"] == name:
            del data[id]
-    with open("C:\\Users\\user\\Desktop\\SchoolProj\\SchoolProj-1\\DBes\\BuisnessUser.json", 'w') as file:
+    print(data)
+    with open("DBes\\BuisnessUser__Test.json", 'w') as file:
         json.dump(data, file, indent=4)
 
-        
+#Delete_Buisness_by_name("WeShoes")
+
+#items() כי הDICT לא שינה את הגודל
+data = Show_db()
+for business_id ,business_info in data.items():
+    print(f"name: {business_info['name']}")

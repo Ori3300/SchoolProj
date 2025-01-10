@@ -1,0 +1,82 @@
+{
+    "1": {
+        "id": 1,
+        "name": "Pizzaria",
+        "category": "food",
+        "description": "xfgdchvjgbhknjm",
+        "owner_name": "ori",
+        "owner_id": 1,
+        "comments": {
+            "1": {
+                "id": 1,
+                "username": "shalev",
+                "content": "So delicius"
+            },
+            "2": {
+                "id": 2,
+                "username": "shalev",
+                "content": "W"
+            }
+        }
+    },
+    "2": {
+        "id": 2,
+        "name": "Tech Solutions",
+        "category": "Technology",
+        "description": "A company specializing in software development.",
+        "owner_name": "ori",
+        "owner_id": 1,
+        "comments": {
+            "1": {
+                "id": 3,
+                "username": "shalev",
+                "content": "wowwww"
+            },
+            "2": {
+                "id": 4,
+                "username": "shalev",
+                "content": "You are the king"
+            }
+        }
+    },
+    "3": {
+        "id": 1,
+        "name": "Pizzaria",
+        "category": "food",
+        "description": "the best pizza in the world!",
+        "owner_name": "ori",
+        "owner_id": 1,
+        "comments": {
+            "1": {
+                "id": 1,
+                "username": "shalev",
+                "content": "So delicius"
+            },
+            "2": {
+                "id": 2,
+                "username": "shalev",
+                "content": "W"
+            }
+        }
+    },
+    "4": {
+        "id": 2,
+        "name": "Tech Solutions",
+        "category": "Technology",
+        "description": "A company specializing in software development.",
+        "owner_name": "ori",
+        "owner_id": 1,
+        "comments": {
+            "1": {
+                "id": 3,
+                "username": "shalev",
+                "content": "wowwww"
+            },
+            "2": {
+                "id": 4,
+                "username": "shalev",
+                "content": "You are the king"
+            }
+        }
+    }
+}

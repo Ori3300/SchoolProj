@@ -1,0 +1,26 @@
+{
+    "1": {
+        "id": 1,
+        "name": "Pizzaria",
+        "category": "food",
+        "description": "the best pizza in the world!",
+        "owner_name": "ori",
+        "owner_id": 1,
+        "comments": [
+            1,
+            2
+        ]
+    },
+    "2": {
+        "id": 2,
+        "name": "Tech Solutions",
+        "category": "Technology",
+        "description": "A company specializing in software development.",
+        "owner_name": "ori",
+        "owner_id": 1,
+        "comments": [
+            3,
+            4
+        ]
+    }
+}

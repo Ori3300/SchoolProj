@@ -1,0 +1,11 @@
+{
+    "1": {
+        "id": 1,
+        "username": "ori",
+        "password": "123",
+        "businesses": [
+            1,
+            2
+        ]
+    }
+}
