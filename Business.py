@@ -1,11 +1,15 @@
 import DButilities 
 Db = DButilities.DButilities()
 import User
+import requests
+from PIL import Image
+from io import BytesIO
+import os
 
 class Business:
     count = 0
 
-    def __init__(self, name, category, description,owner_name ,owner_id, comments):
+    def __init__(self, name, category, description ,owner_name ,owner_id, comments):
         Business.count += 1 
         self.__id = Business.count
         self.__name = name
@@ -17,6 +21,8 @@ class Business:
             self.__comments = comments 
         else:
             self.__comments = []
+
+        self.generate_ai_image()
 
 
 
@@ -35,6 +41,32 @@ class Business:
     def get_comments(self):
         return self.__comments
     
+    def generate_ai_image(self):
+       # Image details
+        prompt = self.__category
+        width = 1024
+        height = 1024
+        seed = 1 # Each seed generates a new image variation
+        model = 'flux' # Using 'flux' as default if model is not provided
+
+        image_url = f"https://pollinations.ai/p/{prompt}?width={width}&height={height}&seed={seed}&model={model}"
+    
+        self.download_image(image_url)
+    def download_image(self, image_url):
+        # Fetching the image from the URL
+        response = requests.get(image_url)
+        # Writing the content to a file named 'image.jpg'
+        directory = f'Pic\\business{self.__id}_{self.__name}'
+        os.makedirs(directory, exist_ok=True)
+        file_path = f"{directory}\\ai_image.jpg"
+
+
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+        # Logging completion message
+        print('Download Completed')
+
+
     def add_business_to_DB(self):
         Business = self.to_dict()
         data = Db.get_data(name="Businesses")
@@ -73,7 +105,6 @@ class Business:
             f"Description: {self.__description}, Category: {self.__category}, "
             f"Owner: {self.__owner}, Comments: {self.__comments})"
         )
-
 
 
 

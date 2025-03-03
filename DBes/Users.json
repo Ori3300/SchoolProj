@@ -2,10 +2,16 @@
     "1": {
         "id": 1,
         "username": "ori",
-        "password": "123",
+        "password": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
         "businesses": [
             1,
             2
         ]
+    },
+    "2": {
+        "id": 1,
+        "username": "admin",
+        "password": "998ed4d621742d0c2d85ed84173db569afa194d4597686cae947324aa58ab4bb",
+        "businesses": []
     }
 }

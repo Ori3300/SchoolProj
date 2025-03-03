@@ -5,13 +5,13 @@ from tkinter import messagebox
 import DButilities 
 Db = DButilities.DButilities()
 import hashlib
-from PIL import ImageTk, Image
-import MainPage
+import User
+import LoginPage
 
-class LoginPage():
+class SignUpPage():
     def __init__(self, root):
         self.root = root
-        self.root.title("Login Page")
+        self.root.title("Sign Up Page")
         self.root.geometry("800x600")
 
         # Load and display background image
@@ -30,7 +30,7 @@ class LoginPage():
         # Sign-Up Title
         self.signup_label = tk.Label(
             self.root,
-            text="Login",
+            text="Sign Up",
             font=self.title_font,
             bg=None,
             fg="purple"
@@ -89,50 +89,41 @@ class LoginPage():
 
 
         self.root.mainloop()
-    
 
-    def is_user_exist(self, username):
+
+
+    def is_password_exist(self, hash_password):
         data = Db.get_data("Users")
-        usernames = [user_info["username"] for user_id, user_info in data.items()]
-        return username in usernames
+        passwords = [user_info['password'] for user_id, user_info in data.items()]
+        return hash_password in passwords
 
-    def is_password_matches(self, entered_password, username):
-        if self.is_user_exist(username):
-            hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
-            data = Db.get_data("Users")
-            for user_id, user_info in data.items():
-                if user_info["username"] == username:
-                    return user_info["password"] == hashed_pass
-        else:
-            print("user doesnt exist")
 
-    def check_credentials(self):        
+    def check_credentials(self):
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
-        hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
 
-
-        # Check if the entered credentials are correct
-        if self.is_password_matches(entered_password, entered_username):
-            messagebox.showinfo("Login Success", "Welcome to the system!")
+        hash_password = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
+        if not self.is_password_exist(hash_password):
+            new_user = User.User(entered_username , hash_password, None)
+            new_user.add_user_to_DB()
+            messagebox.showinfo("Sign Up Success", "Welcome to the system!")
             self.clear_entries()
-            self.root.destroy()
-            root = tk.Tk()
-            data = Db.get_data("Users")
-            for user_id, user_info in data.items():
-                if user_info["password"] == hashed_pass:
-                    id = user_info["id"] 
-
-            MainPage.MainPage(root, entered_username, id)
         else:
-            messagebox.showerror("Login Failed", "Invalid username or password")
-
+            messagebox.showerror("Sign Up failed","Password is already exist")
         
+        self.root.destroy()
+        root = tk.Tk()
+        LoginPage.LoginPage(root)
+
     
     def clear_entries(self):
         # Clear the username and password fields after successful login
         self.username_entry.delete(0, tk.END)
         self.password_entry.delete(0, tk.END)
+
+    
+
+
 
 
 

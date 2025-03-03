@@ -1,5 +1,7 @@
 import socket
 from cryptography.fernet import Fernet
+import HomePage
+
 
 def start_client(host='127.0.0.1', port=5555):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -8,9 +10,7 @@ def start_client(host='127.0.0.1', port=5555):
 
     try:
         # Receive the Fernet key from the server
-        key = client.recv(1024)
-        cipher = Fernet(key)
-        print(f"[KEY RECEIVED] Encryption key: {key.decode()}")
+        
 
         while True:
             # Input message to send
@@ -31,3 +31,7 @@ def start_client(host='127.0.0.1', port=5555):
 
 if __name__ == "__main__":
     start_client()
+
+
+
+        

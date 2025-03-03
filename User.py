@@ -1,6 +1,6 @@
 import DButilities 
 Db = DButilities.DButilities()
-
+import hashlib
 
 
 class User:
@@ -11,7 +11,8 @@ class User:
         User.count += 1
         self.__id = User.count
         self.__username = username
-        self.__password = password
+
+        self.__password = hashlib.sha256(password.encode("utf-8")).hexdigest()
         if businesses is not None:
             self.__businesses = businesses 
         else:
@@ -47,10 +48,15 @@ class User:
         business.remove_business_from_DB() 
 
 
+    
+
+
+
+
     def to_dict(self):
         temp = list()
         for business in self.__businesses:
-            temp.append(business.get_id())
+            temp.append(business.get_id())        
         return{
             "id": self.__id,
             "username": self.__username,
