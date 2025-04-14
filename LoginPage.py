@@ -27,7 +27,7 @@ class LoginPage():
         self.label_font = font.Font(family="Helvetica", size=14)
         self.button_font = font.Font(family="Helvetica", size=14)
 
-        # Sign-Up Title
+        # LOGIN Title
         self.signup_label = tk.Label(
             self.root,
             text="Login",
@@ -94,11 +94,12 @@ class LoginPage():
     def is_user_exist(self, username):
         data = Db.get_data("Users")
         usernames = [user_info["username"] for user_id, user_info in data.items()]
+        print(usernames)
+        # Check if the username exists in the list
         return username in usernames
 
-    def is_password_matches(self, entered_password, username):
+    def is_password_matches(self, hashed_pass, username):
         if self.is_user_exist(username):
-            hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
             data = Db.get_data("Users")
             for user_id, user_info in data.items():
                 if user_info["username"] == username:
@@ -107,13 +108,14 @@ class LoginPage():
             print("user doesnt exist")
 
     def check_credentials(self):        
-        entered_username = self.username_entry.get()
-        entered_password = self.password_entry.get()
+        entered_username = self.username_entry.get().strip()
+        entered_password = self.password_entry.get().strip()
         hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
 
 
         # Check if the entered credentials are correct
-        if self.is_password_matches(entered_password, entered_username):
+        if self.is_password_matches(hashed_pass, entered_username):
+            print("Login successful")
             messagebox.showinfo("Login Success", "Welcome to the system!")
             self.clear_entries()
             self.root.destroy()

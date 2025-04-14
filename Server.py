@@ -1,52 +1,156 @@
 import socket
 import threading
+import json
 from cryptography.fernet import Fernet
+import DButilities as DB
+from Business import Business
+from Comment import Comment
 
-# Generate a key for encryption/decryption
-key = Fernet.generate_key()
-cipher = Fernet(key)
+class Server:
+    def __init__(self, host='127.0.0.1', port=65432):
+        self.host = host
+        self.port = port
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.bind((self.host, self.port))
+        self.server_socket.listen(5)
+        self.clients = []
+        self.db = DB.DButilities()
+        print(f"Server started at {self.host}:{self.port}")
 
-# Function to handle client communication
-def handle_client(client_socket, client_address):
-    print(f"[NEW CONNECTION] {client_address} connected.")
-    try:
-        # Send the Fernet key to the client
-        client_socket.send(key)
-        print(f"[KEY SENT] Encryption key sent to {client_address}")
+    def handle_client(self, client_socket, addr):
+        try:
+            # Send encryption key
+            key = Fernet.generate_key()
+            client_socket.sendall(key)
+            cipher = Fernet(key)
 
+            while True:
+                encrypted_data = client_socket.recv(8192)
+                if not encrypted_data:
+                    break
+
+                try:
+                    data = cipher.decrypt(encrypted_data).decode("utf-8")
+                    data = json.loads(data)
+                    response = self.route(data)
+                    encrypted_response = cipher.encrypt(json.dumps(response).encode("utf-8"))
+                    client_socket.sendall(encrypted_response)
+                except Exception as e:
+                    print(f"Decryption or processing error: {e}")
+                    error = cipher.encrypt(json.dumps({"error": str(e)}).encode("utf-8"))
+                    client_socket.sendall(error)
+
+        finally:
+            client_socket.close()
+
+    def route(self, data):
+        command = data.get("command")
+        payload = data.get("payload")
+
+        if command == "signup":
+            users = self.db.get_data("Users")
+            for user in users.values():
+                if user['username'] == payload['username']:
+                    return {"status": "fail", "message": "Username already exists."}
+            user_id = str(len(users)+1)
+            users[user_id] = {
+                "id": user_id,
+                "username": payload['username'],
+                "password": payload['password'],
+                "businesses": []
+            }
+            self.db.update_data("Users", users)
+            return {"status": "success"}
+
+        elif command == "login":
+            users = self.db.get_data("Users")
+            for user in users.values():
+                if user['username'] == payload['username'] and user['password'] == payload['password']:
+                    return {"status": "success", "id": user['id']}
+            return {"status": "fail"}
+
+        elif command == "add_business":
+            businesses = self.db.get_data("Businesses")
+            business_id = str(len(businesses) + 1)
+            businesses[business_id] = {
+                "id": business_id,
+                "name": payload['name'],
+                "category": payload['category'],
+                "description": payload['description'],
+                "owner_name": payload['owner_name'],
+                "owner_id": payload['owner_id'],
+                "comments": []
+            }
+            self.db.update_data("Businesses", businesses)
+
+            users = self.db.get_data("Users")
+            users[payload['owner_id']]['businesses'].append(payload['name'])
+            self.db.update_data("Users", users)
+
+            return {"status": "success"}
+
+        elif command == "remove_business":
+            businesses = self.db.get_data("Businesses")
+            comments = self.db.get_data("Comments")
+            users = self.db.get_data("Users")
+            name = payload['name']
+            user_id = payload['owner_id']
+
+            business_id = None
+            for id, b in businesses.items():
+                if b['name'] == name and b['owner_id'] == user_id:
+                    business_id = id
+                    break
+            if business_id:
+                del businesses[business_id]
+                self.db.update_data("Businesses", businesses)
+
+                for cid in list(comments):
+                    if comments[cid]['business_id'] == name:
+                        del comments[cid]
+                self.db.update_data("Comments", comments)
+
+                users[user_id]['businesses'].remove(name)
+                self.db.update_data("Users", users)
+                return {"status": "success"}
+            return {"status": "fail", "message": "Business not found."}
+
+        elif command == "get_businesses":
+            return self.db.get_data("Businesses")
+
+        elif command == "get_users":
+            return self.db.get_data("Users")
+
+        elif command == "get_comments":
+            return self.db.get_data("Comments")
+
+        elif command == "add_comment":
+            comments = self.db.get_data("Comments")
+            comment_id = str(len(comments)+1)
+            comments[comment_id] = {
+                "id": comment_id,
+                "username": payload['username'],
+                "content": payload['content'],
+                "business_id": payload['business_id']
+            }
+            self.db.update_data("Comments", comments)
+
+            businesses = self.db.get_data("Businesses")
+            for id, b in businesses.items():
+                if b['id'] == payload['business_id']:
+                    b['comments'].append(comment_id)
+                    break
+            self.db.update_data("Businesses", businesses)
+
+            return {"status": "success"}
+
+        return {"status": "unknown command"}
+
+    def start(self):
         while True:
-            # Receive encrypted message from the client
-            encrypted_message = client_socket.recv(1024)
-            if not encrypted_message:
-                print(f"[DISCONNECTED] {client_address} disconnected.")
-                break  # Client disconnected
-            
-            # Decrypt the message
-            message = cipher.decrypt(encrypted_message).decode('utf-8')
-            print(f"[{client_address}] {message}")
-
-            # Encrypt and send the response back to the client
-            response = cipher.encrypt(f"Server received: {message}".encode('utf-8'))
-            client_socket.send(response)
-    except Exception as e:
-        print(f"[ERROR] {client_address}: {e}")
-    finally:
-        client_socket.close()
-
-# Main function to start the server
-def start_server(host='127.0.0.1', port=5555):
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((host, port))
-    server.listen(5)  # Max backlog of connections
-    print(f"[LISTENING] Server is listening on {host}:{port}")
-
-    while True:
-        client_socket, client_address = server.accept()
-        print(f"[CONNECTED] {client_address} connected.")
-        # Start a new thread for each client
-        client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address))
-        client_thread.start()
-        print(f"[ACTIVE CONNECTIONS] {threading.active_count() - 1}")
+            client_socket, addr = self.server_socket.accept()
+            threading.Thread(target=self.handle_client, args=(client_socket, addr)).start()
 
 if __name__ == "__main__":
-    start_server()
+    server = Server()
+    server.start()

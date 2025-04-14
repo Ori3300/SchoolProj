@@ -12,7 +12,7 @@ class User:
         self.__id = User.count
         self.__username = username
 
-        self.__password = hashlib.sha256(password.encode("utf-8")).hexdigest()
+        self.__password = password
         if businesses is not None:
             self.__businesses = businesses 
         else:

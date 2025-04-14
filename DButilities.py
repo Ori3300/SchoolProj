@@ -1,44 +1,43 @@
 import json
-import DButilities as DB
+import os
 
 class DButilities:
     def __init__(self):
-        pass
-    
-
+        # File paths for different databases
+        self.db_paths = {
+            "Users": "DBes\\Users.json",
+            "Businesses": "DBes\\businnesses.json",
+            "Comments": "DBes\\Comments.json"
+        }
 
     def get_path(self, name):
-        if name == "Users":
-            full_path = "DBes\\Users.json"
-        if name == "Businesses":
-            full_path = "DBes\\businnesses.json"
-        if name == "Comments":
-            full_path = "DBes\\Comments.json"
-        return full_path
+        """Return the file path for the specified database."""
+        return self.db_paths.get(name)
 
     def get_data(self, name):
+        """Retrieve data from the specified database (JSON file)."""
         path = self.get_path(name)
-        with open(path, 'r') as file:
-            data = json.load(file)
-        return data
+        if not path or not os.path.exists(path):
+            print(f"Error: {name} database path not found.")
+            return {}
+
+        try:
+            with open(path, 'r') as file:
+                data = json.load(file)
+            return data
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            print(f"Error reading {name} data: {e}")
+            return {}
 
     def update_data(self, name, data):
+        """Update the specified database with new data."""
         path = self.get_path(name)
-        with open(path, 'w') as file:
-            json.dump(data, file, indent=4)
-
-    def show_DB(self, name):
-        if name == "Users":
-            data = self.get_data(name)
-            for user_id, user_info in data.items():
-                print(f"ID: {user_info['id']}, Username: {user_info['username']}, Password: {user_info['password']}, Businesses: {user_info['businesses']}")
+        if not path:
+            print(f"Error: Invalid database name {name}.")
+            return
         
-        if name == "businesses":
-            data = self.get_data(name)
-            for user_id, user_info in data.items():
-                print(f"ID: {user_info['id']}, Name: {user_info['name']},  Category: {user_info['category']}, Description: {user_info['description']}, Owner Name: {user_info['owner_name']}, Owner Id: {user_info['owner_id']}, comments: {user_info['comments']}")
-        
-        if name == "Comments":
-            data = self.get_data(name)
-            for user_id, user_info in data.items():
-                print(f"ID: {user_info['id']}, Username: {user_info['username']}, Content: {user_info['content']}")
+        try:
+            with open(path, 'w') as file:
+                json.dump(data, file, indent=4)
+        except IOError as e:
+            print(f"Error writing {name} data: {e}")

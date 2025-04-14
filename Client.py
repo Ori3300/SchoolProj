@@ -1,37 +1,63 @@
 import socket
 from cryptography.fernet import Fernet
-import HomePage
+import json
+import tkinter as tk
+from HomePage import HomePage
 
+class Client:
+    def __init__(self, host='127.0.0.1', port=65432):
+        self.host = host
+        self.port = port
+        self.client_socket = None
+        self.key = None
+        self.cipher_suite = None
 
-def start_client(host='127.0.0.1', port=5555):
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((host, port))
-    print(f"Connected to server {host}:{port}")
+    def connect(self):
+        """Establish connection and get Fernet key from server"""
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.client_socket.connect((self.host, self.port))
+            self.key = self.client_socket.recv(1024)
+            self.cipher_suite = Fernet(self.key)
+            print(f"[Client] Connected to server at {self.host}:{self.port}")
+        except Exception as e:
+            print(f"[Client] Connection error: {e}")
 
-    try:
-        # Receive the Fernet key from the server
-        
+    def send(self, message_dict):
+        """Encrypts and sends data to server"""
+        try:
+            json_data = json.dumps(message_dict)
+            encrypted = self.cipher_suite.encrypt(json_data.encode("utf-8"))
+            self.client_socket.sendall(encrypted)
+        except Exception as e:
+            print(f"[Client] Error sending data: {e}")
 
-        while True:
-            # Input message to send
-            message = input("Enter message to send (type 'exit' to disconnect): ")
-            if message.lower() == 'exit':
-                break
-            
-            # Encrypt the message
-            encrypted_message = cipher.encrypt(message.encode('utf-8'))
-            client.send(encrypted_message)
+    def receive(self):
+        """Receives and decrypts response from server"""
+        try:
+            encrypted_response = self.client_socket.recv(4096)
+            if not encrypted_response:
+                return None
+            decrypted = self.cipher_suite.decrypt(encrypted_response).decode("utf-8")
+            return json.loads(decrypted)
+        except Exception as e:
+            print(f"[Client] Error receiving data: {e}")
+            return None
 
-            # Receive and decrypt the server's response
-            encrypted_response = client.recv(1024)
-            response = cipher.decrypt(encrypted_response).decode('utf-8')
-            print(f"Server: {response}")
-    finally:
-        client.close()
+    def close(self):
+        if self.client_socket:
+            self.client_socket.close()
+            print("[Client] Connection closed")
+
+    def run_gui(self):
+        """Starts the GUI (HomePage) and injects this client instance"""
+        root = tk.Tk()
+        HomePage(root, self)
+        root.mainloop()
+
 
 if __name__ == "__main__":
-    start_client()
-
-
-
-        
+    client = Client()
+    client.connect()
+    client.run_gui()
+    client.close()

@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import font
-from PIL import Image, ImageTk  # For handling the background image
+from PIL import Image, ImageTk  
 import DButilities 
 Db = DButilities.DButilities()
 import Business
 import MainPage
 
 
-class AddBusinessPage:
+class AddBusinessPage():
     def __init__(self, root, username_user, id_user):
         self.username_user = username_user
         self.id_user = id_user
@@ -92,9 +92,9 @@ class AddBusinessPage:
         self.canvas.create_window(400, 350, window=self.add_button)
 
     def add_action(self):
-        business_name = self.business_name_entry.get()
-        category = self.category_entry.get()
-        description = self.description_entry.get()
+        business_name = self.business_name_entry.get().strip()
+        category = self.category_entry.get().strip()
+        description = self.description_entry.get().strip()
 
 
         business1 = Business.Business(business_name, category, description, self.username_user, self.id_user, None)

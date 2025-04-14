@@ -6,7 +6,7 @@ import DButilities
 Db = DButilities.DButilities()
 import hashlib
 import User
-import LoginPage
+
 
 class SignUpPage():
     def __init__(self, root):
@@ -99,8 +99,9 @@ class SignUpPage():
 
 
     def check_credentials(self):
-        entered_username = self.username_entry.get()
-        entered_password = self.password_entry.get()
+        from LoginPage import LoginPage
+        entered_username = self.username_entry.get().strip()
+        entered_password = self.password_entry.get().strip()
 
         hash_password = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
         if not self.is_password_exist(hash_password):
@@ -113,7 +114,7 @@ class SignUpPage():
         
         self.root.destroy()
         root = tk.Tk()
-        LoginPage.LoginPage(root)
+        LoginPage(root)
 
     
     def clear_entries(self):
@@ -121,8 +122,8 @@ class SignUpPage():
         self.username_entry.delete(0, tk.END)
         self.password_entry.delete(0, tk.END)
 
-    
 
+        
 
 
 
