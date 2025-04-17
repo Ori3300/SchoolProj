@@ -28,14 +28,14 @@ class LoginPage():
         self.button_font = font.Font(family="Helvetica", size=14)
 
         # LOGIN Title
-        self.signup_label = tk.Label(
+        self.login_label = tk.Label(
             self.root,
             text="Login",
             font=self.title_font,
             bg=None,
             fg="purple"
         )
-        self.canvas.create_window(400, 50, window=self.signup_label)
+        self.canvas.create_window(400, 50, window=self.login_label)
 
         # Username Label and Entry
         self.username_label = tk.Label(
@@ -74,10 +74,10 @@ class LoginPage():
         )
         self.canvas.create_window(400, 250, window=self.password_entry, width=200)
 
-        # Sign-Up Button
-        self.signup_button = tk.Button(
+        # Login Button
+        self.login_button = tk.Button(
             self.root,
-            text="Sign Up",
+            text="LOGIN",
             font=self.button_font,
             bg="#D8BFD8",
             fg="purple",
@@ -85,7 +85,22 @@ class LoginPage():
             pady=10,
             command=self.check_credentials
         )
-        self.canvas.create_window(400, 350, window=self.signup_button)
+        self.canvas.create_window(400, 350, window=self.login_button)
+
+
+        # Back Button
+        self.back_button = tk.Button(
+            self.root,
+            text="Back",
+            font=self.button_font,
+            bg="#D8BFD8",
+            fg="purple",
+            padx=20,
+            pady=10,
+            command=self.back_action
+        )
+        self.canvas.create_window(400, 450, window=self.back_button)
+
 
 
         self.root.mainloop()
@@ -135,6 +150,12 @@ class LoginPage():
         # Clear the username and password fields after successful login
         self.username_entry.delete(0, tk.END)
         self.password_entry.delete(0, tk.END)
+
+    def back_action(self):
+        self.root.destroy()
+        root = tk.Tk()
+        from HomePage import HomePage
+        HomePage(root)
 
 
 

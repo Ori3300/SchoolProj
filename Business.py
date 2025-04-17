@@ -7,14 +7,13 @@ from io import BytesIO
 import os
 
 class Business:
-    count = 0
-
-    def __init__(self, name, category, description ,owner_name ,owner_id, comments):
-        Business.count += 1 
-        self.__id = Business.count
+    def __init__(self, name, category, description, location, owner_name ,owner_id, comments):
+        business_data = Db.get_data(name="Businesses")
+        self.__id = len(business_data) + 1
         self.__name = name
         self.__description = description
         self.__category = category 
+        self.__location = location
         self.__owner_name = owner_name
         self.__owner_id = owner_id
         if comments is not None:
@@ -34,6 +33,8 @@ class Business:
         return self.__description
     def get_category(self):
         return self.__category
+    def get_location(self):
+        return self.__location
     def get_owner_name(self):
         return self.__owner_name
     def get_owner_id(self):
@@ -95,16 +96,12 @@ class Business:
             "name": self.__name,
             "category": self.__category,
             "description": self.__description,
+            "location": self.__location,
             "owner_name": self.__owner_name,
             "owner_id": self.__owner_id,
             "comments": temp
         }
-    def __str__(self):
-        return (
-            f"Business(ID: {self.__id}, Name: {self.__name}, "
-            f"Description: {self.__description}, Category: {self.__category}, "
-            f"Owner: {self.__owner}, Comments: {self.__comments})"
-        )
+
 
 
 

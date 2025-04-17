@@ -87,6 +87,19 @@ class SignUpPage():
         )
         self.canvas.create_window(400, 350, window=self.signup_button)
 
+        # Back Button
+        self.back_button = tk.Button(
+            self.root,
+            text="Back",
+            font=self.button_font,
+            bg="#D8BFD8",
+            fg="purple",
+            padx=20,
+            pady=10,
+            command=self.back_action
+        )
+        self.canvas.create_window(400, 450, window=self.back_button)
+
 
         self.root.mainloop()
 
@@ -107,21 +120,27 @@ class SignUpPage():
         if not self.is_password_exist(hash_password):
             new_user = User.User(entered_username , hash_password, None)
             new_user.add_user_to_DB()
-            messagebox.showinfo("Sign Up Success", "Welcome to the system!")
-            self.clear_entries()
+            messagebox.showinfo("Sign Up Success", "successfully signed up!")
+            self.root.destroy()
+            root = tk.Tk()
+            LoginPage(root)
         else:
             messagebox.showerror("Sign Up failed","Password is already exist")
+            self.clear_entries()
         
-        self.root.destroy()
-        root = tk.Tk()
-        LoginPage(root)
-
+        
     
     def clear_entries(self):
         # Clear the username and password fields after successful login
         self.username_entry.delete(0, tk.END)
         self.password_entry.delete(0, tk.END)
 
+
+    def back_action(self):
+        self.root.destroy()
+        root = tk.Tk()
+        from HomePage import HomePage
+        HomePage(root)
 
         
 

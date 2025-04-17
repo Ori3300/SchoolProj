@@ -77,6 +77,7 @@ class Server:
                 "name": payload['name'],
                 "category": payload['category'],
                 "description": payload['description'],
+                "location": payload['location'],
                 "owner_name": payload['owner_name'],
                 "owner_id": payload['owner_id'],
                 "comments": []

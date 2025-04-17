@@ -5,6 +5,7 @@ import DButilities
 Db = DButilities.DButilities()
 import Business
 import MainPage
+from tkinter import messagebox
 
 
 class AddBusinessPage():
@@ -78,6 +79,19 @@ class AddBusinessPage():
         self.description_entry = tk.Entry(self.root, font=self.label_font, bg="yellow")
         self.canvas.create_window(400, 250, window=self.description_entry)
 
+        # Location Label and Entry
+        self.location_label = tk.Label(
+            self.root,
+            text="Location:",
+            font=self.label_font,
+            bg=None,
+            fg="purple"
+        )
+        self.canvas.create_window(200, 300, window=self.location_label)
+
+        self.location_entry = tk.Entry(self.root, font=self.label_font, bg="yellow")
+        self.canvas.create_window(400, 300, window=self.location_entry)
+
         # Add Button
         self.add_button = tk.Button(
             self.root,
@@ -95,10 +109,21 @@ class AddBusinessPage():
         business_name = self.business_name_entry.get().strip()
         category = self.category_entry.get().strip()
         description = self.description_entry.get().strip()
+        location = self.location_entry.get().strip()
 
 
-        business1 = Business.Business(business_name, category, description, self.username_user, self.id_user, None)
+        business1 = Business.Business(business_name, category, description, location ,self.username_user, self.id_user, None)
         business1.add_business_to_DB()
+
+        user_data = Db.get_data("Users")
+        for _ , user_info in user_data.items():
+            if user_info["id"] == self.id_user:
+                user_info["businesses"].append(business1.get_id())
+                break
+        Db.update_data("Users", user_data)
+        
+        
+        messagebox.showinfo("success", "business added successfully")
 
         self.root.destroy()
         root = tk.Tk()

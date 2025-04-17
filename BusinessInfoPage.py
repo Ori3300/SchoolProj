@@ -38,6 +38,9 @@ class BusinessInfoPage:
         
         self.desc_label = tk.Label(self.info_frame, text=f"description: {self.business["description"]}", font=("Arial", 14))
         self.desc_label.grid(row=1, column=0, sticky="w", padx=20, pady=5)
+
+        self.loc_label = tk.Label(self.info_frame, text=f"location: {self.business["location"]}", font=("Arial", 14))
+        self.loc_label.grid(row=2, column=0, sticky="w", padx=20, pady=5)
         
         # Image Display
         self.image_label = tk.Label(self.info_frame, image=self.business_photo)
@@ -81,7 +84,7 @@ class BusinessInfoPage:
     def submit_comment(self):
         given_comment = self.comment_entry.get().strip()
         if given_comment:
-            if len(given_comment) > 500:  # Limit comment length to 500 characters
+            if len(given_comment) > 100:  # Limit comment length to 500 characters
                 messagebox.showerror("Error", "Comment is too long! Max length is 500 characters.")
                 return
             

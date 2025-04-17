@@ -85,9 +85,9 @@ class MainPage:
         # Load business image safely
         image_path = f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg"
         if os.path.exists(image_path):
-            print("photo path does not exist")
             business_img = Image.open(image_path)
         else:
+            print("photo path does not exist")
             business_img = Image.open("Pic\\default.jpg")  # Fallback image
         
         business_img = business_img.resize((600, 150))

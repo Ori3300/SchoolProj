@@ -2,11 +2,9 @@ import DButilities
 Db = DButilities.DButilities()
 
 class Comment:
-    count = 0
-
     def __init__(self,user_name, content):
-        Comment.count += 1
-        self.__id = Comment.count
+        comment_data = Db.get_data(name="Comments")
+        self.__id = len(comment_data) + 1
         self.__username = user_name
         self.__content = content
 

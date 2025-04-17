@@ -4,12 +4,9 @@ import hashlib
 
 
 class User:
-
-    count = 0
-
     def __init__(self ,username, password, businesses):
-        User.count += 1
-        self.__id = User.count
+        users_data = Db.get_data(name="Users")
+        self.__id = len(users_data) + 1
         self.__username = username
 
         self.__password = password

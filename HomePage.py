@@ -3,7 +3,7 @@ from tkinter import font
 from PIL import Image, ImageTk  # For handling the background image
 import SignUpPage
 import LoginPage
-import socket
+
 
 
 class HomePage():
@@ -71,7 +71,9 @@ class HomePage():
         LoginPage.LoginPage(root)
 
 
-root = tk.Tk()
-HomePage(root)
-root.mainloop()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    HomePage(root)
+    root.mainloop()
 

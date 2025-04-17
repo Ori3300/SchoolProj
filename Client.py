@@ -52,7 +52,7 @@ class Client:
     def run_gui(self):
         """Starts the GUI (HomePage) and injects this client instance"""
         root = tk.Tk()
-        HomePage(root, self)
+        HomePage(root)
         root.mainloop()
 
 
