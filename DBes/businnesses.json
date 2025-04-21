@@ -1,27 +1,3 @@
 {
-    "1": {
-        "id": 1,
-        "name": "a",
-        "category": "a",
-        "description": "a",
-        "location": "a",
-        "owner_name": "a",
-        "owner_id": 1,
-        "comments": [
-            1,
-            2,
-            3,
-            4
-        ]
-    },
-    "2": {
-        "id": 2,
-        "name": "aa",
-        "category": "aa",
-        "description": "aa",
-        "location": "aa",
-        "owner_name": "a",
-        "owner_id": 1,
-        "comments": []
-    }
+    
 }
