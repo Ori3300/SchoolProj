@@ -5,8 +5,12 @@ import hashlib
 
 class User:
     def __init__(self ,username, password, businesses):
+        last_user_id = 0
         users_data = Db.get_data(name="Users")
-        self.__id = len(users_data) + 1
+        for _, user_info in users_data.items():
+            last_user_id = user_info["id"]
+
+        self.__id = last_user_id + 1 
         self.__username = username
 
         self.__password = password

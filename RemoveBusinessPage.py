@@ -26,7 +26,6 @@ class RemoveBusinessPage:
         
 
         data = Db.get_data("Businesses")
-        print(data)
         self.businesses = [business_info["name"] for business_id, business_info in data.items() if business_info["owner_id"] == self.id_user]
         print(self.businesses)
 
@@ -56,29 +55,53 @@ class RemoveBusinessPage:
             self.businesses.remove(name)
             self.canvas.itemconfig(self.list_label, text=self.get_business_list())
             self.entry.delete(0, tk.END)
-            # Remove business from database
             data = Db.get_data("Businesses")
-            for id in list(data.keys()):
-                if data[id]["name"] == name and data[id]["owner_id"] == self.id_user:
-                    del data[id]
-                    Db.update_data("Businesses", data)
+            # Find business ID
+            id = None
+            for _, business_info in data.items():
+                if business_info["name"] == name and business_info["owner_id"] == self.id_user:
+                    id = str(business_info["id"])
+                    break
             # Remove business image directory
             if os.path.exists(f"Pic\\business{id}_{name}\\ai_image.jpg"):
                 os.remove(f"Pic\\business{id}_{name}\\ai_image.jpg")
                 os.rmdir(f"Pic\\business{id}_{name}")
             # Remove business comments from database
+            business_data = Db.get_data("Businesses")
+            comments_id = None
+            print("business_data", business_data)
+            for business_id, business_info in business_data.items():
+                if business_info["name"] == name and business_info["owner_id"] == self.id_user:
+                    comments_id = business_info["comments"]
+                    break
+            print(comments_id)
             comments_data = Db.get_data("Comments")
-            for id in list(comments_data.keys()):
-                if comments_data[id]["business_id"] == name:
-                    del comments_data[id]
+
+            for comment_id in list(comments_data.keys()):
+                if comments_data[comment_id]["id"] in comments_id:
+                    del comments_data[comment_id]
             Db.update_data("Comments", comments_data)
+
+            # for comment_id, comment_info in comments_data.items():
+            #     if comment_info["id"] in comments_id:
+            #         del comments_data[comment_id]
+            # Db.update_data("Comments", comments_data)
             # Remove business from user's list
             user_data = Db.get_data("Users")
-            for id in list(user_data.keys()):
-                if user_data[id]["username"] == self.username_user:
-                    user_data[id]["businesses"].remove(name)
+            for user_id, user_info in user_data.items():
+                if user_info["id"] == self.id_user:
+                    if int(id) in user_info["businesses"]:
+                        user_info["businesses"].remove(int(id))
+                        break
             Db.update_data("Users", user_data)
-            
+            # Remove business from database
+            data = Db.get_data("Businesses")
+            for _, business_info in data.items():
+                if business_info["name"] == name and business_info["owner_id"] == self.id_user:
+                    id = str(business_info["id"])
+                    del data[id]
+                    break
+            Db.update_data("Businesses", data)
             # Show success message
             messagebox.showinfo("Success", f"Business '{name}' removed successfully.")
         else:

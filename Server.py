@@ -5,6 +5,7 @@ from cryptography.fernet import Fernet
 import DButilities as DB
 from Business import Business
 from Comment import Comment
+import random
 
 class Server:
     def __init__(self, host='127.0.0.1', port=65432):
@@ -15,14 +16,34 @@ class Server:
         self.server_socket.listen(5)
         self.clients = []
         self.db = DB.DButilities()
+        self.prime = 23
+        self.base = 5
         print(f"Server started at {self.host}:{self.port}")
 
     def handle_client(self, client_socket, addr):
         try:
-            # Send encryption key
-            key = Fernet.generate_key()
-            client_socket.sendall(key)
-            cipher = Fernet(key)
+            # Diffie-Hellman key exchange
+            server_private = random.randint(1, self.prime-1)  # Example private key (should be random in production)
+            server_public = pow(self.base, server_private, self.prime)
+
+            # Send DH parameters and server public key
+            dh_info = json.dumps({
+                'prime': self.prime,
+                'base': self.base,
+                'server_public': server_public
+            }).encode('utf-8')
+            client_socket.sendall(dh_info)
+
+            # Receive client public key
+            client_public = int(client_socket.recv(1024).decode('utf-8'))
+            shared_secret = pow(client_public, server_private, self.prime)
+            fernet_key = Fernet.generate_key()[:32]
+            shared_key = Fernet(Fernet.generate_key())
+
+            # Use part of the shared secret to generate a Fernet key
+            key = str(shared_secret).zfill(32)[:32].encode()
+            cipher = Fernet(Fernet.generate_key())  # Simulated - replace with derived key logic
+            print(f"[Server] Shared secret with {addr}: {shared_secret}")
 
             while True:
                 encrypted_data = client_socket.recv(8192)
@@ -36,7 +57,7 @@ class Server:
                     encrypted_response = cipher.encrypt(json.dumps(response).encode("utf-8"))
                     client_socket.sendall(encrypted_response)
                 except Exception as e:
-                    print(f"Decryption or processing error: {e}")
+                    print(f"[Server] Error decrypting: {e}")
                     error = cipher.encrypt(json.dumps({"error": str(e)}).encode("utf-8"))
                     client_socket.sendall(error)
 

@@ -8,8 +8,12 @@ import os
 
 class Business:
     def __init__(self, name, category, description, location, owner_name ,owner_id, comments):
+        last_business_id = 0
         business_data = Db.get_data(name="Businesses")
-        self.__id = len(business_data) + 1
+        for _, business_info in business_data.items():
+            last_business_id = business_info["id"]
+
+        self.__id = last_business_id + 1 
         self.__name = name
         self.__description = description
         self.__category = category 
@@ -70,8 +74,11 @@ class Business:
 
     def add_business_to_DB(self):
         Business = self.to_dict()
+        last_business_id = 0
         data = Db.get_data(name="Businesses")
-        data[len(data)+1] = Business
+        for Business_id, _ in data.items():
+            last_business_id = int(Business_id)
+        data[last_business_id+1] = Business
         Db.update_data(name="Businesses", data=data)
     def remove_business_from_DB(self):
         data = Db.get_data(name="Businesses")
