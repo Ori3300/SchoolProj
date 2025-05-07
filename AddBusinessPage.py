@@ -105,6 +105,19 @@ class AddBusinessPage():
         )
         self.canvas.create_window(400, 350, window=self.add_button)
 
+        # Return Button
+        self.return_button = tk.Button(
+            self.root,
+            text="Back",
+            font=self.button_font,
+            bg="#D8BFD8",
+            fg="purple",
+            padx=20,
+            pady=10,
+            command=self.go_back
+        )
+        self.canvas.create_window(400, 450, window=self.return_button)
+
     def add_action(self):
         business_name = self.business_name_entry.get().strip()
         category = self.category_entry.get().strip()
@@ -129,6 +142,12 @@ class AddBusinessPage():
         root = tk.Tk()
         MainPage.MainPage(root, self.username_user, self.id_user)
         
+
+    def go_back(self):
+        from MainPage import MainPage
+        self.root.destroy()
+        root = tk.Tk()
+        MainPage(root, self.username_user, self.id_user)
         
 
 
