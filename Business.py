@@ -1,9 +1,6 @@
 import DButilities 
 Db = DButilities.DButilities()
-import User
 import requests
-from PIL import Image
-from io import BytesIO
 import os
 
 class Business:

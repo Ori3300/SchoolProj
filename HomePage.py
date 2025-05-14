@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import font
-from PIL import Image, ImageTk  # For handling the background image
+from PIL import Image, ImageTk 
 import SignUpPage
 import LoginPage
 

@@ -14,7 +14,6 @@ class Server:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(5)
-        self.clients = []
         self.db = DB.DButilities()
         self.prime = 23
         self.base = 5

@@ -126,10 +126,9 @@ class SignUpPage():
             LoginPage(root)
         else:
             messagebox.showerror("Sign Up failed","Password is already exist")
-            self.clear_entries()
+            self.clear_entries()        
         
         
-    
     def clear_entries(self):
         # Clear the username and password fields after successful login
         self.username_entry.delete(0, tk.END)

@@ -1,6 +1,5 @@
 import DButilities 
 Db = DButilities.DButilities()
-import hashlib
 
 
 class User:

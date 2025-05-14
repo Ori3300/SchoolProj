@@ -101,7 +101,7 @@ class LoginPage():
         )
         self.canvas.create_window(400, 450, window=self.back_button)
 
-
+        self.number_of_tries = 0
 
         self.root.mainloop()
     
@@ -126,24 +126,26 @@ class LoginPage():
         entered_username = self.username_entry.get().strip()
         entered_password = self.password_entry.get().strip()
         hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
+        print("number of tries: ", self.number_of_tries)
 
-
-        # Check if the entered credentials are correct
-        if self.is_password_matches(hashed_pass, entered_username):
-            print("Login successful")
-            messagebox.showinfo("Login Success", "Welcome to the system!")
-            self.clear_entries()
-            self.root.destroy()
-            root = tk.Tk()
-            data = Db.get_data("Users")
-            for user_id, user_info in data.items():
-                if user_info["password"] == hashed_pass:
-                    id = user_info["id"] 
-
-            MainPage.MainPage(root, entered_username, id)
+        if self.number_of_tries < 5:
+            # Check if the entered credentials are correct
+            if self.is_password_matches(hashed_pass, entered_username):
+                print("Login successful")
+                messagebox.showinfo("Login Success", "Welcome to the system!")
+                self.root.destroy()
+                root = tk.Tk()
+                data = Db.get_data("Users")
+                for user_id, user_info in data.items():
+                    if user_info["password"] == hashed_pass:
+                        id = user_info["id"] 
+                        MainPage.MainPage(root, entered_username, id)
+            else:
+                messagebox.showerror("Login Failed", "Invalid username or password")
+                self.number_of_tries += 1
         else:
-            messagebox.showerror("Login Failed", "Invalid username or password")
-
+            messagebox.showerror("Login Failed", "You have exceeded the maximum number of login attempts. Your access has been denied.")
+        self.clear_entries()
         
     
     def clear_entries(self):

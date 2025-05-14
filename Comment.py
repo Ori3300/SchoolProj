@@ -37,7 +37,6 @@ class Comment:
 
 
 
-
     def to_dict(self):
         return {
             "id": self.__id,

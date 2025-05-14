@@ -81,12 +81,6 @@ class RemoveBusinessPage:
                 if comments_data[comment_id]["id"] in comments_id:
                     del comments_data[comment_id]
             Db.update_data("Comments", comments_data)
-
-            # for comment_id, comment_info in comments_data.items():
-            #     if comment_info["id"] in comments_id:
-            #         del comments_data[comment_id]
-            # Db.update_data("Comments", comments_data)
-            # Remove business from user's list
             user_data = Db.get_data("Users")
             for user_id, user_info in user_data.items():
                 if user_info["id"] == self.id_user:
