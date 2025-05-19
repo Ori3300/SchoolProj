@@ -7,13 +7,11 @@ import base64
 class Business:
     def __init__(self, name, category, description, location, owner_name ,owner_id, comments, client):
         self.__client = client
-        last_business_id = 0
+        
         self.__img_b64 = None
-        business_data = self.__client.send_with_sync("fetch_database", {"name": "Businesses"})
-        for _, business_info in business_data.items():
-            last_business_id = business_info["id"]
+        
 
-        self.__id = last_business_id + 1 
+        self.__id = 0
         self.__name = name
         self.__description = description
         self.__category = category 
