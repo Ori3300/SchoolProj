@@ -60,18 +60,6 @@ class Client:
             response = self._receive_response()
             print(f"[Client] Action response: {response}")
 
-            # 3. Push updated DB back to server
-            # full_data = {
-            #     "Users": self.db.get_data("Users"),
-            #     "Businesses": self.db.get_data("Businesses"),
-            #     "Comments": self.db.get_data("Comments"),
-            # }
-            # self._send_command({"command": "update_database", "payload": full_data})
-            # update_response = self._receive_response()
-            # if update_response and update_response.get("status") == "success":
-            #     print("[Client] Successfully pushed DB after action")
-            # else:
-            #     print("[Client] Failed to push DB after action")
 
             return response
 
