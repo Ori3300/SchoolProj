@@ -140,11 +140,7 @@ class Server:
             return self.db.get_data("Comments")
 
         if cmd == "fetch_database":
-            return {
-                "Users": self.db.get_data("Users"),
-                "Businesses": self.db.get_data("Businesses"),
-                "Comments": self.db.get_data("Comments")
-            }
+            return self.db.get_data(pl["name"])
 
         if cmd == "update_database":
             self.db.update_data(name=pl["name"], data=pl["data"])
