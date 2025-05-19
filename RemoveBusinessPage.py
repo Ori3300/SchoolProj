@@ -24,7 +24,7 @@ class RemoveBusinessPage:
         self.canvas.create_image(0, 0, image=self.bg_photo, anchor="nw")
 
         # Load businesses from server
-        data = self.client.send_with_sync("fetch_database")["businesses"]
+        data = self.client.send_with_sync("fetch_database", {"name": "Businesses"})
         self.business_data = data
         self.businesses = [info["name"] for _, info in data.items() if info["owner_id"] == self.id_user]
 
@@ -71,7 +71,7 @@ class RemoveBusinessPage:
             print(f"Error removing image folder: {e}")
 
         # Remove comments
-        comments_data = self.client.send_with_sync("fetch_database")["Comments"]
+        comments_data = self.client.send_with_sync("fetch_database", {"name": "Comments"})
         business_comments = self.business_data[business_id].get("comments", [])
         for comment_id in list(comments_data.keys()):
             if comments_data[comment_id]["id"] in business_comments:
@@ -83,7 +83,7 @@ class RemoveBusinessPage:
         })
 
         # Update user's business list
-        users_data = self.client.send_with_sync("fetch_database")["Users"]
+        users_data = self.client.send_with_sync("fetch_database", {"name": "Users"})
         for user_info in users_data.values():
             if user_info["id"] == self.id_user:
                 if int(business_id) in user_info["businesses"]:

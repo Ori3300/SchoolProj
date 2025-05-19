@@ -107,7 +107,7 @@ class SignUpPage():
 
 
     def is_password_exist(self, hash_password):
-        data = self.client.send_with_sync("fetch_database")["Users"]
+        data = self.client.send_with_sync("fetch_database", {"name": "Users"})
         passwords = [user_info['password'] for user_id, user_info in data.items()]
         return hash_password in passwords
 

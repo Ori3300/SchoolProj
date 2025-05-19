@@ -9,7 +9,7 @@ class Business:
         self.__client = client
         last_business_id = 0
         self.__img_b64 = None
-        business_data = self.__client.send_with_sync("fetch_database")["Businesses"]
+        business_data = self.__client.send_with_sync("fetch_database", {"name": "Businesses"})
         for _, business_info in business_data.items():
             last_business_id = business_info["id"]
 
@@ -46,6 +46,7 @@ class Business:
     def get_comments(self):
         return self.__comments
     def get_img_b64(self):
+
         return self.__img_b64
 
     def generate_ai_image(self):
@@ -78,13 +79,13 @@ class Business:
     def add_business_to_DB(self):
         Business = self.to_dict()
         last_business_id = 0
-        data = self.__client.send_with_sync("fetch_database")["Businesses"]
+        data = self.__client.send_with_sync("fetch_database", {"name": "Businesses"})
         for Business_id, _ in data.items():
             last_business_id = int(Business_id)
         data[last_business_id+1] = Business
         Db.update_data(name="Businesses", data=data)
     def remove_business_from_DB(self):
-        data = self.__client.send_with_sync("fetch_database")["Businesses"]
+        data = self.__client.send_with_sync("fetch_database", {"name": "Businesses"})
         for id in list(data.keys()):
             if data[id]["id"] == self.__id:
                 del data[id]
