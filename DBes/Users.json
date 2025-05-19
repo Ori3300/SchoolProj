@@ -9,9 +9,7 @@
         "id": 2,
         "username": "ori",
         "password": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
-        "businesses": [
-            
-        ]
+        "businesses": []
     },
     "3": {
         "id": 3,
@@ -29,8 +27,12 @@
         "id": 5,
         "username": "BB",
         "password": "fc686c314491e1f68bf1899fc54b2327353c44dd1ab4ed56538ef623edd1e866",
-        "businesses": [
-            
-        ]
+        "businesses": []
+    },
+    "6": {
+        "id": 6,
+        "username": "ORIOR",
+        "password": "67e70dbf52d1b8e36d3e5e3093953b8b728b76d08524052b7faf7b0bebda9048",
+        "businesses": []
     }
 }

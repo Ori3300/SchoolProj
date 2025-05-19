@@ -77,11 +77,12 @@ class AddBusinessPage:
         )
 
         # Add business to DB via server
+        business_dict = business.to_dict()
         try:
             # Add the business
             self.client.send_with_sync(
                 "add_business",
-                business.to_dict()
+                business_dict
             )
 
             messagebox.showinfo("Success", "Business added successfully.")
