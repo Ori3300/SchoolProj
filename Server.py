@@ -98,6 +98,7 @@ class Server:
             return self.db.get_data("Businesses")
 
         if cmd == "add_business":
+            print("add business inininin")
             bs = self.db.get_data("Businesses")
             bid = len(bs)+1
             bs[bid] = {"id":bid, "name": pl['name'],"category": pl["category"], "description": pl["description"], "location": pl["location"], "owner_name": pl["owner_name"], "owner_id": pl["owner_id"], "img_b64": pl["img_b64"],  "comments":[]}

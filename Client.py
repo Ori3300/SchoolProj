@@ -44,7 +44,6 @@ class Client:
             print(f"[Client] Connection error: {e}")
 
     def send_with_sync(self, command, payload=None):
-        """Pulls DB, sends command, pushes DB"""
         try:
             
             print("command: " + command)

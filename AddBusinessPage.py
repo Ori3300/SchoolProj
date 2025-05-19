@@ -76,6 +76,9 @@ class AddBusinessPage:
             self.username_user, self.id_user, None, self.client
         )
 
+        print("Business object created:", business)
+
+
         # Add business to DB via server
         business_dict = business.to_dict()
         try:
