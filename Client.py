@@ -46,13 +46,13 @@ class Client:
     def send_with_sync(self, command, payload=None):
         """Pulls DB, sends command, pushes DB"""
         try:
-            # 1. Pull database from server
-            self._send_command({"command": "fetch_database"})
-            server_db = self._receive_response()
-            if server_db:
-                for table, table_data in server_db.items():
-                    self.db.update_data(table, table_data)
-                print("[Client] Synced DB from server before action")
+            # # 1. Pull database from server
+            # self._send_command({"command": "fetch_database"})
+            # server_db = self._receive_response()
+            # if server_db:
+            #     for table, table_data in server_db.items():
+            #         self.db.update_data(table, table_data)
+            #     print("[Client] Synced DB from server before action")
 
             # 2. Perform action
             print("command: " +command)
