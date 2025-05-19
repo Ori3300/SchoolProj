@@ -11,5 +11,15 @@
             1,
             2
         ]
+    },
+    "2": {
+        "id": 2,
+        "name": "orior",
+        "category": "orior",
+        "description": "orior",
+        "location": "Tel Aviv",
+        "owner_name": "BB",
+        "owner_id": "5",
+        "comments": []
     }
 }

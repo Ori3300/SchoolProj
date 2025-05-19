@@ -143,8 +143,7 @@ class Server:
             }
 
         if cmd == "update_database":
-            for t in ("Users","Businesses","Comments"):
-                self.db.update_data(t, pl[t])
+            self.db.update_data(name=pl["name"], data=pl["data"])
             return {"status":"success"}
 
         return {"status":"unknown command"}
