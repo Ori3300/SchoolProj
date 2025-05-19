@@ -73,7 +73,9 @@ class Server:
         cmd = data.get("command")
         pl  = data.get("payload")
 
-        print(f"[Server] Received command: {cmd} with payload: {pl}")
+
+        print(f"[Server] ROUTE: cmd={cmd!r}, payload type={type(pl)} payload={pl!r}")
+
 
 
 
