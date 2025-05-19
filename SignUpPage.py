@@ -123,13 +123,13 @@ class SignUpPage():
             new_user.add_user_to_DB()
 
             # Send signup request to server
-            response = self.client.send_with_sync({
+            response = self.client.send_with_sync(
                 "command": "signup",
                 "payload": {
                     "username": entered_username,
                     "password": hash_password
                 }
-            })
+            )
 
             print(f"[Client] Sign Up Response: {response}")
             if response["status"] == "success":
