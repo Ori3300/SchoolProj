@@ -11,15 +11,5 @@
             1,
             2
         ]
-    },
-    "2": {
-        "id": 2,
-        "name": "ORIOR3",
-        "category": "ORIOR3",
-        "description": "ORIOR3",
-        "location": "Tel Aviv",
-        "owner_name": "BB",
-        "owner_id": "5",
-        "comments": []
     }
 }

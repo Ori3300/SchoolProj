@@ -3,6 +3,7 @@ from tkinter import font
 from PIL import Image, ImageTk
 import os
 from tkinter import messagebox
+import base64
 
 
 class MainPage:
@@ -93,6 +94,12 @@ class MainPage:
         business_frame.pack(pady=10)
 
         # Load business image
+        business_img_b64 = business.get_img_b64()
+        if business_img_b64:
+            with open(f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg", "wb") as image_file:
+                image_file.write(base64.b64decode(business_img))
+
+
         image_path = f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg"
         if os.path.exists(image_path):
             business_img = Image.open(image_path)

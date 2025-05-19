@@ -2,6 +2,7 @@ import DButilities
 Db = DButilities.DButilities()
 import requests
 import os
+import base64
 
 class Business:
     def __init__(self, name, category, description, location, owner_name ,owner_id, comments, client):
@@ -43,7 +44,12 @@ class Business:
         return self.__owner_id
     def get_comments(self):
         return self.__comments
-    
+    def get_img_b64(self):
+        with open(f"Pic\\business{self.__id}_{self.__name}\\ai_image.jpg", "rb") as image_file:
+            img_bytes = image_file.read()
+        img_b64 = base64.b64encode(img_bytes).decode('utf-8')
+        return img_b64
+
     def generate_ai_image(self):
        # Image details
         prompt = self.__category
@@ -55,6 +61,7 @@ class Business:
         image_url = f"https://pollinations.ai/p/{prompt}?width={width}&height={height}&seed={seed}&model={model}"
     
         self.download_image(image_url)
+
     def download_image(self, image_url):
         # Fetching the image from the URL
         response = requests.get(image_url)
@@ -96,6 +103,11 @@ class Business:
         temp = list()
         for comment in self.__comments:
             temp.append(comment.get_id())
+
+        with open(f"Pic\\business{self.__id}_{self.__name}\\ai_image.jpg", "rb") as image_file:
+            img_bytes = image_file.read()
+        img_b64 = base64.b64encode(img_bytes).decode('utf-8')
+        
         return {
             "id": self.__id,
             "name": self.__name,
@@ -104,7 +116,8 @@ class Business:
             "location": self.__location,
             "owner_name": self.__owner_name,
             "owner_id": self.__owner_id,
-            "comments": temp
+            "comments": temp,
+            "picture": img_b64
         }
 
 
