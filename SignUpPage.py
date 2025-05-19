@@ -9,7 +9,8 @@ import User
 
 
 class SignUpPage():
-    def __init__(self, root):
+    def __init__(self, root, client):
+        self.client = client
         self.root = root
         self.root.title("Sign Up Page")
         self.root.geometry("800x600")
@@ -154,7 +155,7 @@ class SignUpPage():
         self.root.destroy()
         root = tk.Tk()
         from HomePage import HomePage
-        HomePage(root)
+        HomePage(root, self.client)
 
         
 
