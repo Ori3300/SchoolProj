@@ -129,19 +129,20 @@ class LoginPage():
 
 
         if self.number_of_tries < 5:
-            # Check if the entered credentials are correct
-            if self.is_password_matches(hashed_pass, entered_username):
-                print("Login successful")
-                messagebox.showinfo("Login Success", "Welcome to the system!")
-                
-                data = data = self.client.send_with_sync("fetch_database")["Users"]
-                for user_id, user_info in data.items():
-                    if user_info["password"] == hashed_pass:
-                        id = user_info["id"]
-                        self.root.destroy()
-                        root = tk.Tk() 
-                        MainPage.MainPage(root, self.client, entered_username, id)
-                        break
+            response = self.client.send_with_sync(
+                "login",
+                {
+                    "username": entered_username,
+                    "password": hashed_pass
+                }
+            )
+            if response["status"] == "success":
+                # Successful login
+                self.username_user = entered_username
+                self.id_user = response["id"]
+                self.root.destroy()
+                root = tk.Tk()
+                MainPage.MainPage(root, self.client, self.username_user, self.id_user)
             else:
                 messagebox.showerror("Login Failed", "Invalid username or password")
                 self.number_of_tries += 1
