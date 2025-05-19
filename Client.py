@@ -10,7 +10,7 @@ from HomePage import HomePage
 from DButilities import DButilities
 
 class Client:
-    def __init__(self, host='127.0.0.1', port=65432):
+    def __init__(self, host='192.168.1.204', port=65432):
         self.host = host
         self.port = port
         self.sock = None
@@ -90,7 +90,7 @@ class Client:
         root.mainloop()
 
 if __name__ == "__main__":
-    client = Client('192.168.2.35')
+    client = Client('192.168.1.204', 65432)
     client.connect()
     client.run_gui()
     client.push_database()

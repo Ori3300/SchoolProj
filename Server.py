@@ -12,7 +12,7 @@ from Business import Business
 from Comment import Comment
 
 class Server:
-    def __init__(self, host='0.0.0.0', port=65432):
+    def __init__(self, host='192.168.1.204', port=65432):
         self.host = host
         self.port = port
         self.db = DB.DButilities()

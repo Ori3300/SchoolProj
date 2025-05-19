@@ -34,17 +34,17 @@ class BusinessInfoPage:
         self.info_frame = tk.Frame(root)
         self.info_frame.pack(pady=20)
         
-        self.category_label = tk.Label(self.info_frame, text=f"category: {self.business["category"]}", font=("Arial", 14), fg="blue")
+        self.category_label = tk.Label(self.info_frame, text=f"category: {self.business['category']}", font=("Arial", 14), fg="blue")
         self.category_label.grid(row=0, column=0, sticky="w", padx=20, pady=5)
         
-        self.desc_label = tk.Label(self.info_frame, text=f"description: {self.business["description"]}", font=("Arial", 14), fg="blue")
+        self.desc_label = tk.Label(self.info_frame, text=f"description: {self.business['description']}", font=("Arial", 14), fg="blue")
         self.desc_label.grid(row=1, column=0, sticky="w", padx=20, pady=5)
 
         self.loc_label = tk.Label(self.info_frame, text=f"location: {self.business['location']}", font=("Arial", 14), fg="blue")
         self.loc_label.grid(row=2, column=0, sticky="w", padx=20, pady=5)
 
         # מזג אוויר
-        weather_info = self.get_weather(self.business["location"])
+        weather_info = self.get_weather(self.business['location'])
         self.weather_label = tk.Label(self.info_frame, text=f"weather: {weather_info}", font=("Arial", 14), fg="blue")
         self.weather_label.grid(row=3, column=0, sticky="w", padx=20, pady=5)
 
@@ -103,8 +103,8 @@ class BusinessInfoPage:
             # Update the business' comments
             business_data = Db.get_data("Businesses")
             for _, business_info in business_data.items():
-                if business_info["id"] == self.business["id"]:
-                    business_info["comments"].append(comment1.get_id())
+                if business_info['id'] == self.business['id']:
+                    business_info['comments'].append(comment1.get_id())
                     Db.update_data("Businesses", business_data)
                     break
 
@@ -120,8 +120,8 @@ class BusinessInfoPage:
         # Fetch comments from the database
         business_data = Db.get_data("Businesses")
         for _, Business_info in business_data.items():
-            if Business_info["id"] == self.business["id"]:
-                comments_id = Business_info["comments"]
+            if Business_info['id'] == self.business['id']:
+                comments_id = Business_info['comments']
                 break
         comment_data = Db.get_data("Comments")
         self.comments = [comment_info for _, comment_info in comment_data.items() if comment_info["id"] in comments_id]
@@ -157,6 +157,4 @@ class BusinessInfoPage:
                 return "מזג האוויר לא זמין"
         except:
             return "שגיאה בשליפת תחזית"
-
-
 
