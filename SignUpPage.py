@@ -123,9 +123,10 @@ class SignUpPage():
             new_user.add_user_to_DB()
 
             # Send signup request to server
-            response = self.client.send_with_sync(
-                "command": "signup",
-                "payload": {
+            response = self.client.send_with_sync
+            (
+                "signup",
+                {
                     "username": entered_username,
                     "password": hash_password
                 }
