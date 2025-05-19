@@ -85,7 +85,7 @@ class AddBusinessPage:
             })
 
             # Update user's business list
-            users_data = self.client.send_with_sync({"action": "get_data", "table": "Users"})
+            users_data  = self.client.send_with_sync("fetch_database")["Users"]
             for _, user_info in users_data.items():
                 if user_info["id"] == self.id_user:
                     user_info["businesses"].append(business.get_id())

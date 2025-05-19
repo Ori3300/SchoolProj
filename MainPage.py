@@ -73,7 +73,7 @@ class MainPage:
     def show_all_businesses(self):
         """Fetch and display all businesses."""
         try:
-            response = self.client.send_with_sync({"action": "get_data", "table": "Businesses"})
+            response = self.client.send_with_sync("fetch_database")["Businesses"]
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load businesses: {e}")
             return
