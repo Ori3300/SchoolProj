@@ -107,7 +107,7 @@ class LoginPage():
     
 
     def is_user_exist(self, username):
-        data = Db.get_data("Users")
+        data = data = self.client.send_with_sync("fetch_database")["Users"]
         usernames = [user_info["username"] for user_id, user_info in data.items()]
         print(usernames)
         # Check if the username exists in the list
@@ -115,7 +115,7 @@ class LoginPage():
 
     def is_password_matches(self, hashed_pass, username):
         if self.is_user_exist(username):
-            data = Db.get_data("Users")
+            data = data = self.client.send_with_sync("fetch_database")["Users"]
             for user_id, user_info in data.items():
                 if user_info["username"] == username:
                     return user_info["password"] == hashed_pass
@@ -134,7 +134,7 @@ class LoginPage():
                 print("Login successful")
                 messagebox.showinfo("Login Success", "Welcome to the system!")
                 
-                data = Db.get_data("Users")
+                data = data = self.client.send_with_sync("fetch_database")["Users"]
                 for user_id, user_info in data.items():
                     if user_info["password"] == hashed_pass:
                         id = user_info["id"]
