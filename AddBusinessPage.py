@@ -93,8 +93,8 @@ class AddBusinessPage:
 
             self.client.send_with_sync(
                 "update_data",
-                {"Users",
-                users_data}
+                {"name": "Users",
+                "data": users_data}
             )
 
             messagebox.showinfo("Success", "Business added successfully.")

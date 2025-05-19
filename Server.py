@@ -79,7 +79,7 @@ class Server:
                 return {"status": "fail", "message": "Username exists"}
             uid = str(len(users_data)+1)
             users_data[uid] = {"id":uid, **pl, "businesses":[]}
-            print(users_data)
+            
             self.db.update_data(name="Users", data=users_data)
             return {"status":"success"}
 
