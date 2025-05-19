@@ -165,6 +165,15 @@ class Server:
 
             return {"status": "success"}
 
+        elif command == "fetch_database":
+            return self.db
+
+        elif command == "update_database":
+            self.db = payload
+            self.save_database()
+            return {"status": "success"}
+
+
         return {"status": "unknown command"}
 
     def start(self):

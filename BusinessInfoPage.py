@@ -4,6 +4,7 @@ import DButilities
 Db = DButilities.DButilities()
 import Comment
 from tkinter import messagebox
+import requests
 
 class BusinessInfoPage:
     def __init__(self, root, username_user, id_user, business, business_img):
@@ -33,14 +34,20 @@ class BusinessInfoPage:
         self.info_frame = tk.Frame(root)
         self.info_frame.pack(pady=20)
         
-        self.category_label = tk.Label(self.info_frame, text=f"category: {self.business["category"]}", font=("Arial", 14))
+        self.category_label = tk.Label(self.info_frame, text=f"category: {self.business["category"]}", font=("Arial", 14), fg="blue")
         self.category_label.grid(row=0, column=0, sticky="w", padx=20, pady=5)
         
-        self.desc_label = tk.Label(self.info_frame, text=f"description: {self.business["description"]}", font=("Arial", 14))
+        self.desc_label = tk.Label(self.info_frame, text=f"description: {self.business["description"]}", font=("Arial", 14), fg="blue")
         self.desc_label.grid(row=1, column=0, sticky="w", padx=20, pady=5)
 
-        self.loc_label = tk.Label(self.info_frame, text=f"location: {self.business["location"]}", font=("Arial", 14))
+        self.loc_label = tk.Label(self.info_frame, text=f"location: {self.business['location']}", font=("Arial", 14), fg="blue")
         self.loc_label.grid(row=2, column=0, sticky="w", padx=20, pady=5)
+
+        # מזג אוויר
+        weather_info = self.get_weather(self.business["location"])
+        self.weather_label = tk.Label(self.info_frame, text=f"weather: {weather_info}", font=("Arial", 14), fg="blue")
+        self.weather_label.grid(row=3, column=0, sticky="w", padx=20, pady=5)
+
         
         # Image Display
         self.image_label = tk.Label(self.info_frame, image=self.business_photo)
@@ -132,5 +139,24 @@ class BusinessInfoPage:
     def refresh_comment_action(self):
         self.comments_listbox.delete(0, tk.END)  # Clear existing comments
         self.load_comments()  # Reload comments from the database
+
+
+  
+
+    def get_weather(self, city_name):
+        api_key = "6e585d25ed0d9a950169e66253bdbdc5"  # שים כאן את המפתח האישי שלך מאתר OpenWeatherMap
+        try:
+            url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&units=metric&lang=en"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                temp = data["main"]["temp"]
+                desc = data["weather"][0]["description"]
+                return f"{desc}, {temp}°C"
+            else:
+                return "מזג האוויר לא זמין"
+        except:
+            return "שגיאה בשליפת תחזית"
+
 
 

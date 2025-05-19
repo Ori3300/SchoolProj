@@ -103,7 +103,6 @@ class LoginPage():
 
         self.number_of_tries = 0
 
-        self.root.mainloop()
     
 
     def is_user_exist(self, username):

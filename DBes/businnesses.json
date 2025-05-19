@@ -2,29 +2,14 @@
     "1": {
         "id": 1,
         "name": "Barcelona FC",
-        "category": "Soccer club",
-        "description": "best soccer club in the world",
-        "location": "Spain, Barcelona",
+        "category": "Football, Soccer, Barcelona",
+        "description": "Best in the world",
+        "location": "Barcelona",
         "owner_name": "ori",
         "owner_id": 2,
         "comments": [
             1,
-            2,
-            3
-        ]
-    },
-    "2": {
-        "id": 2,
-        "name": "HiAnime",
-        "category": "anime",
-        "description": "a place to watch anime with your friends",
-        "location": "Shibuya, Japan",
-        "owner_name": "azran",
-        "owner_id": 4,
-        "comments": [
-            4,
-            5,
-            6
+            2
         ]
     }
 }
