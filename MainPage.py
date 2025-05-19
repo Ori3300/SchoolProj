@@ -93,6 +93,13 @@ class MainPage:
         business_frame = tk.Frame(self.scrollable_frame, bg="white", width=620, height=300, highlightbackground="black", highlightthickness=2)
         business_frame.pack(pady=10)
 
+
+        # Business details
+        print("business", business)
+        business_id = business["id"]
+        business_name = business["name"]
+        business_owner_name = business["owner_name"]
+
         # Load business image
         image_path = f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg"
         if os.path.exists(image_path):
@@ -113,8 +120,8 @@ class MainPage:
         img_label = tk.Label(business_frame, image=business_photo)
         img_label.pack()
 
-        business_name = tk.Label(business_frame, text=business["name"], font=self.label_font, fg="black", bg="white")
-        business_name.pack()
+        business_name_label = tk.Label(business_frame, text=business["name"], font=self.label_font, fg="black", bg="white")
+        business_name_label.pack()
 
         owner_name = tk.Label(business_frame, text=f"Owner: {business['owner_name']}", font=self.button_font, fg="black", bg="white")
         owner_name.pack()
