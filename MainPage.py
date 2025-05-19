@@ -110,7 +110,7 @@ class MainPage:
             directory = f'Pic\\business{business_id}_{business_name}'
             os.makedirs(directory, exist_ok=True)
             with open(f"Pic\\business{business_id}_{business_name}\\ai_image.jpg", "wb") as image_file:
-                image_file.write(base64.b64decode(business_img))
+                image_file.write(business_img)
             business_img = Image.open(image_path)
 
         business_img = business_img.resize((600, 150))
