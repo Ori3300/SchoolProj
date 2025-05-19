@@ -52,31 +52,64 @@ class Client:
         self.pull_database()
         print("[Client] Secure session established and DB pulled.")
 
-    def send(self, msg: dict):
-        data = json.dumps(msg).encode()
-        encrypted = self.cipher.encrypt(data)
-        self.sock.sendall(encrypted)
+    def send_with_sync(self, message_dict):
+        try:
+            # ⬇️ Step 1: Pull the latest DB from the server
+            self.send_raw({"command": "fetch_database"})
+            data = self.receive_raw()
+            if data:
+                for table, table_data in data.items():
+                    self.db.update_data(table, table_data)
+                print("[Client] Synced local DB with server.")
 
-    def receive(self):
-        encrypted = self.sock.recv(8192)
-        data = self.cipher.decrypt(encrypted)
-        return json.loads(data.decode())
+            # ⚙️ Step 2: Send the intended command
+            self.send_raw(message_dict)
+            response = self.receive_raw()
 
-    def pull_database(self):
-        self.send({"command": "fetch_database"})
-        db = self.receive()
-        for table, content in db.items():
-            self.db.update_data(table, content)
+            # ⬆️ Step 3: Push local DB to server
+            full_data = {
+                "Users": self.db.get_data("Users"),
+                "Businesses": self.db.get_data("Businesses"),
+                "Comments": self.db.get_data("Comments"),
+            }
+            self.send_raw({"command": "update_database", "payload": full_data})
+            _ = self.receive_raw()
+            print("[Client] Pushed local DB to server.")
 
-    def push_database(self):
-        full = {
-            "Users":     self.db.get_data("Users"),
-            "Businesses":self.db.get_data("Businesses"),
-            "Comments":  self.db.get_data("Comments"),
-        }
-        self.send({"command": "update_database", "payload": full})
-        resp = self.receive()
-        print("[Client] Push DB:", resp.get("status"))
+            return response
+        except Exception as e:
+            print(f"[Client] send_with_sync error: {e}")
+            return None
+
+
+    # def pull_database(self):
+    #     self.send({"command": "fetch_database"})
+    #     db = self.receive()
+    #     for table, content in db.items():
+    #         self.db.update_data(table, content)
+
+    # def push_database(self):
+    #     full = {
+    #         "Users":     self.db.get_data("Users"),
+    #         "Businesses":self.db.get_data("Businesses"),
+    #         "Comments":  self.db.get_data("Comments"),
+    #     }
+    #     self.send({"command": "update_database", "payload": full})
+    #     resp = self.receive()
+    #     print("[Client] Push DB:", resp.get("status"))
+
+    def send_raw(self, message_dict):
+        json_data = json.dumps(message_dict)
+        encrypted = self.cipher_suite.encrypt(json_data.encode("utf-8"))
+        self.client_socket.sendall(encrypted)
+
+    def receive_raw(self):
+        encrypted_response = self.client_socket.recv(8192)
+        if not encrypted_response:
+            return None
+        decrypted = self.cipher_suite.decrypt(encrypted_response).decode("utf-8")
+        return json.loads(decrypted)    
+
 
     def close(self):
         try:
