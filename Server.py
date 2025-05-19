@@ -2,13 +2,12 @@ import socket
 import threading
 import json
 from cryptography.fernet import Fernet
+from base64 import urlsafe_b64encode
 import DButilities as DB
-from Business import Business
-from Comment import Comment
 import random
 
 class Server:
-    def __init__(self, host='127.0.0.1', port=65432):
+    def __init__(self, host='192.168.1.204', port=65432):
         self.host = host
         self.port = port
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,11 +20,9 @@ class Server:
 
     def handle_client(self, client_socket, addr):
         try:
-            # Diffie-Hellman key exchange
-            server_private = random.randint(1, self.prime-1)  # Example private key (should be random in production)
+            server_private = random.randint(1, self.prime-1)
             server_public = pow(self.base, server_private, self.prime)
 
-            # Send DH parameters and server public key
             dh_info = json.dumps({
                 'prime': self.prime,
                 'base': self.base,
@@ -33,15 +30,13 @@ class Server:
             }).encode('utf-8')
             client_socket.sendall(dh_info)
 
-            # Receive client public key
             client_public = int(client_socket.recv(1024).decode('utf-8'))
             shared_secret = pow(client_public, server_private, self.prime)
-            fernet_key = Fernet.generate_key()[:32]
-            shared_key = Fernet(Fernet.generate_key())
 
-            # Use part of the shared secret to generate a Fernet key
             key = str(shared_secret).zfill(32)[:32].encode()
-            cipher = Fernet(Fernet.generate_key())  # Simulated - replace with derived key logic
+            fernet_key = urlsafe_b64encode(key)
+            cipher = Fernet(fernet_key)
+
             print(f"[Server] Shared secret with {addr}: {shared_secret}")
 
             while True:
@@ -166,13 +161,17 @@ class Server:
             return {"status": "success"}
 
         elif command == "fetch_database":
-            return self.db
+            return {
+                "Users": self.db.get_data("Users"),
+                "Businesses": self.db.get_data("Businesses"),
+                "Comments": self.db.get_data("Comments")
+            }
 
         elif command == "update_database":
-            self.db = payload
-            self.save_database()
+            self.db.update_data("Users", payload["Users"])
+            self.db.update_data("Businesses", payload["Businesses"])
+            self.db.update_data("Comments", payload["Comments"])
             return {"status": "success"}
-
 
         return {"status": "unknown command"}
 

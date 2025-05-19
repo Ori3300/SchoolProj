@@ -2,10 +2,10 @@ import socket
 import json
 import random
 from cryptography.fernet import Fernet
+from base64 import urlsafe_b64encode
 import tkinter as tk
 from HomePage import HomePage
-from DButilities import DButilities  # Keep using your local DB
-import os
+from DButilities import DButilities
 
 class Client:
     def __init__(self, host='127.0.0.1', port=65432):
@@ -13,9 +13,7 @@ class Client:
         self.port = port
         self.client_socket = None
         self.cipher_suite = None
-        self.prime = None
-        self.base = None
-        self.db = DButilities()  # Local DB file
+        self.db = DButilities()
 
     def connect(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,22 +23,21 @@ class Client:
             # Diffie-Hellman Key Exchange
             dh_info = self.client_socket.recv(1024)
             dh_data = json.loads(dh_info.decode('utf-8'))
-            self.prime = dh_data['prime']
-            self.base = dh_data['base']
+            prime = dh_data['prime']
+            base = dh_data['base']
             server_public = dh_data['server_public']
 
-            client_private = random.randint(1, self.prime - 1)
-            client_public = pow(self.base, client_private, self.prime)
+            client_private = random.randint(1, prime - 1)
+            client_public = pow(base, client_private, prime)
             self.client_socket.sendall(str(client_public).encode('utf-8'))
 
-            shared_secret = pow(server_public, client_private, self.prime)
+            shared_secret = pow(server_public, client_private, prime)
             print(f"[Client] Shared secret: {shared_secret}")
 
-            # Create Fernet cipher
             key = str(shared_secret).zfill(32)[:32].encode()
-            self.cipher_suite = Fernet(Fernet.generate_key())  # For demo, use proper key derivation in real use
+            fernet_key = urlsafe_b64encode(key)
+            self.cipher_suite = Fernet(fernet_key)
 
-            # ✅ Pull DB from server and save locally
             self.pull_database()
 
         except Exception as e:
@@ -66,7 +63,6 @@ class Client:
             return None
 
     def pull_database(self):
-        """Pulls the entire DB from the server and writes it to local disk."""
         self.send({"command": "fetch_database"})
         data = self.receive()
         if data:
@@ -75,7 +71,6 @@ class Client:
             print("[Client] Pulled database from server.")
 
     def push_database(self):
-        """Pushes the local DB to the server."""
         full_data = {
             "Users": self.db.get_data("Users"),
             "Businesses": self.db.get_data("Businesses"),
@@ -90,18 +85,21 @@ class Client:
 
     def close(self):
         if self.client_socket:
+            try:
+                self.client_socket.shutdown(socket.SHUT_RDWR)
+            except Exception:
+                pass
             self.client_socket.close()
             print("[Client] Connection closed")
 
     def run_gui(self):
         root = tk.Tk()
-        HomePage(root, self)  # You can now pass the client instance if needed
+        HomePage(root)
         root.mainloop()
 
-
 if __name__ == "__main__":
-    client = Client('192.168.2.35')  # Change to your server IP
+    client = Client('192.168.2.35')  # Set to your server's IP
     client.connect()
     client.run_gui()
-    client.push_database()  # Push local DB on close
+    client.push_database()
     client.close()
