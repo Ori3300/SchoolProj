@@ -80,6 +80,7 @@ class MainPage:
             return
 
         businesses = [info for _, info in business_data.items()]
+        print("businesses", businesses)
         if not business_data:
             self.scrollable_frame.config(height=600)
         else:
