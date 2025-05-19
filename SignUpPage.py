@@ -119,9 +119,6 @@ class SignUpPage():
 
         hash_password = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
         if not self.is_password_exist(hash_password):
-            new_user = User.User(entered_username , hash_password, None)
-            new_user.add_user_to_DB()
-
             # Send signup request to server
             response = self.client.send_with_sync(
                 "signup",
