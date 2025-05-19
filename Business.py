@@ -115,8 +115,9 @@ class Business:
             "location": self.__location,
             "owner_name": self.__owner_name,
             "owner_id": self.__owner_id,
-            "comments": temp,
-            "picture": self.__img_b64
+            "img_b64": self.__img_b64,
+            "comments": temp
+            
         }
 
 

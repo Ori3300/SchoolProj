@@ -78,7 +78,7 @@ class Server:
             if any(u["username"] == pl["username"] for u in users_data.values()):
                 return {"status": "fail", "message": "Username exists"}
             uid = str(len(users_data)+1)
-            users_data[uid] = {"id":uid, **pl, "businesses":[]}
+            users_data[uid] = {"id":int(uid), **pl, "businesses":[]}
             
             self.db.update_data(name="Users", data=users_data)
             return {"status":"success"}
@@ -95,8 +95,8 @@ class Server:
 
         if cmd == "add_business":
             bs = self.db.get_data("Businesses")
-            bid = str(len(bs)+1)
-            bs[bid] = {"id":bid, **pl, "comments":[]}
+            bid = len(bs)+1
+            bs[bid] = {"id":bid, "name": pl['name'],"category": pl["category"], "description": pl["description"], "location": pl["location"], "owner_name": pl["owner_name"], "owner_id": pl["owner_id"], "img_b64": pl["img_b64"],  "comments":[]}
             self.db.update_data("Businesses", bs)
             # link to user
             us = self.db.get_data("Users")
