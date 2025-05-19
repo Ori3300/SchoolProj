@@ -71,10 +71,7 @@ class AddBusinessPage:
             messagebox.showwarning("Missing Info", "Please fill in all fields.")
             return
 
-        business = Business.Business(
-            business_name, category, description, location,
-            self.username_user, self.id_user, None, self.client
-        )
+        business = Business.Business(business_name, category, description, location, self.username_user, self.id_user, None, self.client)
 
         print("Business object created:", business)
 
