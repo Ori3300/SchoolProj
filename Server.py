@@ -1,185 +1,157 @@
 import socket
 import threading
 import json
+
 from cryptography.fernet import Fernet
 from base64 import urlsafe_b64encode
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
+
 import DButilities as DB
-import random
+from Business import Business
+from Comment import Comment
 
 class Server:
-    def __init__(self, host='192.168.1.204', port=65432):
+    def __init__(self, host='0.0.0.0', port=65432):
         self.host = host
         self.port = port
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind((self.host, self.port))
-        self.server_socket.listen(5)
         self.db = DB.DButilities()
-        self.prime = 23
-        self.base = 5
-        print(f"Server started at {self.host}:{self.port}")
 
-    def handle_client(self, client_socket, addr):
+        # Generate RSA key pair
+        self._priv = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        self._pub = self._priv.public_key()
+
+        # Prepare listening socket
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.bind((self.host, self.port))
+        self.sock.listen(5)
+        print(f"[Server] Listening on {self.host}:{self.port}")
+
+    def handle_client(self, conn, addr):
         try:
-            server_private = random.randint(1, self.prime-1)
-            server_public = pow(self.base, server_private, self.prime)
+            # 1) Send RSA public key (PEM) immediately
+            pub_pem = self._pub.public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
+            )
+            conn.sendall(pub_pem)
 
-            dh_info = json.dumps({
-                'prime': self.prime,
-                'base': self.base,
-                'server_public': server_public
-            }).encode('utf-8')
-            client_socket.sendall(dh_info)
+            # 2) Receive the encrypted Fernet key from client
+            enc_key = conn.recv(512)  # size ok for one RSA-encrypted block
 
-            client_public = int(client_socket.recv(1024).decode('utf-8'))
-            shared_secret = pow(client_public, server_private, self.prime)
-
-            key = str(shared_secret).zfill(32)[:32].encode()
-            fernet_key = urlsafe_b64encode(key)
+            # 3) Decrypt with RSA private key
+            fernet_key = self._priv.decrypt(
+                enc_key,
+                padding.OAEP(
+                    mgf=padding.MGF1(hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
             cipher = Fernet(fernet_key)
+            print(f"[Server] Secure session established with {addr}")
 
-            print(f"[Server] Shared secret with {addr}: {shared_secret}")
-
+            # 4) Now handle encrypted JSON messages
             while True:
-                encrypted_data = client_socket.recv(8192)
-                if not encrypted_data:
+                blob = conn.recv(8192)
+                if not blob:
                     break
 
                 try:
-                    data = cipher.decrypt(encrypted_data).decode("utf-8")
-                    data = json.loads(data)
-                    response = self.route(data)
-                    encrypted_response = cipher.encrypt(json.dumps(response).encode("utf-8"))
-                    client_socket.sendall(encrypted_response)
+                    request = json.loads(cipher.decrypt(blob).decode())
+                    response = self.route(request)
+                    conn.sendall(cipher.encrypt(json.dumps(response).encode()))
                 except Exception as e:
-                    print(f"[Server] Error decrypting: {e}")
-                    error = cipher.encrypt(json.dumps({"error": str(e)}).encode("utf-8"))
-                    client_socket.sendall(error)
+                    err = {"error": str(e)}
+                    conn.sendall(cipher.encrypt(json.dumps(err).encode()))
 
         finally:
-            client_socket.close()
+            conn.close()
+            print(f"[Server] Connection closed: {addr}")
 
     def route(self, data):
-        command = data.get("command")
-        payload = data.get("payload")
+        cmd = data.get("command")
+        pl  = data.get("payload")
 
-        if command == "signup":
+        if cmd == "signup":
             users = self.db.get_data("Users")
-            for user in users.values():
-                if user['username'] == payload['username']:
-                    return {"status": "fail", "message": "Username already exists."}
-            user_id = str(len(users)+1)
-            users[user_id] = {
-                "id": user_id,
-                "username": payload['username'],
-                "password": payload['password'],
-                "businesses": []
-            }
+            if any(u["username"] == pl["username"] for u in users.values()):
+                return {"status": "fail", "message": "Username exists"}
+            uid = str(len(users)+1)
+            users[uid] = {"id":uid, **pl, "businesses":[]}
             self.db.update_data("Users", users)
-            return {"status": "success"}
+            return {"status":"success"}
 
-        elif command == "login":
+        if cmd == "login":
             users = self.db.get_data("Users")
-            for user in users.values():
-                if user['username'] == payload['username'] and user['password'] == payload['password']:
-                    return {"status": "success", "id": user['id']}
-            return {"status": "fail"}
+            for u in users.values():
+                if u["username"]==pl["username"] and u["password"]==pl["password"]:
+                    return {"status":"success","id":u["id"]}
+            return {"status":"fail"}
 
-        elif command == "add_business":
-            businesses = self.db.get_data("Businesses")
-            business_id = str(len(businesses) + 1)
-            businesses[business_id] = {
-                "id": business_id,
-                "name": payload['name'],
-                "category": payload['category'],
-                "description": payload['description'],
-                "location": payload['location'],
-                "owner_name": payload['owner_name'],
-                "owner_id": payload['owner_id'],
-                "comments": []
-            }
-            self.db.update_data("Businesses", businesses)
-
-            users = self.db.get_data("Users")
-            users[payload['owner_id']]['businesses'].append(payload['name'])
-            self.db.update_data("Users", users)
-
-            return {"status": "success"}
-
-        elif command == "remove_business":
-            businesses = self.db.get_data("Businesses")
-            comments = self.db.get_data("Comments")
-            users = self.db.get_data("Users")
-            name = payload['name']
-            user_id = payload['owner_id']
-
-            business_id = None
-            for id, b in businesses.items():
-                if b['name'] == name and b['owner_id'] == user_id:
-                    business_id = id
-                    break
-            if business_id:
-                del businesses[business_id]
-                self.db.update_data("Businesses", businesses)
-
-                for cid in list(comments):
-                    if comments[cid]['business_id'] == name:
-                        del comments[cid]
-                self.db.update_data("Comments", comments)
-
-                users[user_id]['businesses'].remove(name)
-                self.db.update_data("Users", users)
-                return {"status": "success"}
-            return {"status": "fail", "message": "Business not found."}
-
-        elif command == "get_businesses":
+        if cmd == "get_businesses":
             return self.db.get_data("Businesses")
 
-        elif command == "get_users":
-            return self.db.get_data("Users")
+        if cmd == "add_business":
+            bs = self.db.get_data("Businesses")
+            bid = str(len(bs)+1)
+            bs[bid] = {"id":bid, **pl, "comments":[]}
+            self.db.update_data("Businesses", bs)
+            # link to user
+            us = self.db.get_data("Users")
+            us[pl["owner_id"]]["businesses"].append(pl["name"])
+            self.db.update_data("Users", us)
+            return {"status":"success"}
 
-        elif command == "get_comments":
+        if cmd == "remove_business":
+            bs = self.db.get_data("Businesses")
+            cm = self.db.get_data("Comments")
+            us = self.db.get_data("Users")
+            name, oid = pl["name"], pl["owner_id"]
+            to_del = next((k for k,v in bs.items() if v["name"]==name and v["owner_id"]==oid), None)
+            if to_del:
+                del bs[to_del]; self.db.update_data("Businesses", bs)
+                for cid,v in list(cm.items()):
+                    if v["business_id"]==to_del:
+                        del cm[cid]
+                self.db.update_data("Comments", cm)
+                us[oid]["businesses"].remove(name)
+                self.db.update_data("Users", us)
+                return {"status":"success"}
+            return {"status":"fail","message":"Not found"}
+
+        if cmd == "add_comment":
+            cm = self.db.get_data("Comments")
+            cid = str(len(cm)+1)
+            cm[cid] = {"id":cid, **pl}
+            self.db.update_data("Comments", cm)
+            # attach to business
+            bs = self.db.get_data("Businesses")
+            bs[pl["business_id"]]["comments"].append(cid)
+            self.db.update_data("Businesses", bs)
+            return {"status":"success"}
+
+        if cmd == "get_comments":
             return self.db.get_data("Comments")
 
-        elif command == "add_comment":
-            comments = self.db.get_data("Comments")
-            comment_id = str(len(comments)+1)
-            comments[comment_id] = {
-                "id": comment_id,
-                "username": payload['username'],
-                "content": payload['content'],
-                "business_id": payload['business_id']
-            }
-            self.db.update_data("Comments", comments)
-
-            businesses = self.db.get_data("Businesses")
-            for id, b in businesses.items():
-                if b['id'] == payload['business_id']:
-                    b['comments'].append(comment_id)
-                    break
-            self.db.update_data("Businesses", businesses)
-
-            return {"status": "success"}
-
-        elif command == "fetch_database":
+        if cmd == "fetch_database":
             return {
                 "Users": self.db.get_data("Users"),
                 "Businesses": self.db.get_data("Businesses"),
                 "Comments": self.db.get_data("Comments")
             }
 
-        elif command == "update_database":
-            self.db.update_data("Users", payload["Users"])
-            self.db.update_data("Businesses", payload["Businesses"])
-            self.db.update_data("Comments", payload["Comments"])
-            return {"status": "success"}
+        if cmd == "update_database":
+            for t in ("Users","Businesses","Comments"):
+                self.db.update_data(t, pl[t])
+            return {"status":"success"}
 
-        return {"status": "unknown command"}
+        return {"status":"unknown command"}
 
     def start(self):
         while True:
-            client_socket, addr = self.server_socket.accept()
-            threading.Thread(target=self.handle_client, args=(client_socket, addr)).start()
+            conn, addr = self.sock.accept()
+            threading.Thread(target=self.handle_client, args=(conn, addr), daemon=True).start()
 
 if __name__ == "__main__":
-    server = Server()
-    server.start()
+    Server().start()
