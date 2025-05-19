@@ -59,6 +59,7 @@ class Server:
 
                 try:
                     request = json.loads(cipher.decrypt(blob).decode())
+                    print(f"[Server] Received request: {request}")
                     response = self.route(request)
                     conn.sendall(cipher.encrypt(json.dumps(response).encode()))
                 except Exception as e:
