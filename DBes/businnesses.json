@@ -14,19 +14,9 @@
     },
     "2": {
         "id": 2,
-        "name": "orior",
-        "category": "orior",
-        "description": "orior",
-        "location": "Tel Aviv",
-        "owner_name": "BB",
-        "owner_id": "5",
-        "comments": []
-    },
-    "3": {
-        "id": 3,
-        "name": "orior",
-        "category": "orior",
-        "description": "orior",
+        "name": "ORIOR1",
+        "category": "ORIOR1",
+        "description": "ORIOR1",
         "location": "Tel Aviv",
         "owner_name": "BB",
         "owner_id": "5",

@@ -100,7 +100,7 @@ class Server:
             self.db.update_data("Businesses", bs)
             # link to user
             us = self.db.get_data("Users")
-            us[pl["owner_id"]]["businesses"].append(pl["name"])
+            us[pl["owner_id"]]["businesses"].append(pl["id"])
             self.db.update_data("Users", us)
             return {"status":"success"}
 

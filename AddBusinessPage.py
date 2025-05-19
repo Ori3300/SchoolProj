@@ -85,17 +85,17 @@ class AddBusinessPage:
             )
 
             # Update user's business list
-            users_data  = self.client.send_with_sync("fetch_database")["Users"]
-            for _, user_info in users_data.items():
-                if user_info["id"] == self.id_user:
-                    user_info["businesses"].append(business.get_id())
-                    break
+            # users_data  = self.client.send_with_sync("fetch_database")["Users"]
+            # for _, user_info in users_data.items():
+            #     if user_info["id"] == self.id_user:
+            #         user_info["businesses"].append(business.get_id())
+            #         break
 
-            self.client.send_with_sync(
-                "update_data",
-                {"name": "Users",
-                "data": users_data}
-            )
+            # self.client.send_with_sync(
+            #     "update_data",
+            #     {"name": "Users",
+            #     "data": users_data}
+            # )
 
             messagebox.showinfo("Success", "Business added successfully.")
 
