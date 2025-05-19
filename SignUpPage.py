@@ -123,17 +123,16 @@ class SignUpPage():
             new_user.add_user_to_DB()
 
             # Send signup request to server
-            response = self.client.send_with_sync
-            (
-                ["signup",
+            response = self.client.send_with_sync(
+                "signup",
                 {
                     "username": entered_username,
                     "password": hash_password
-                }]
+                }
             )
 
             print(f"[Client] Sign Up Response: {response}")
-            if response["status"] == "success":
+            if response.get("status") == "success":
                 messagebox.showinfo("Sign Up Success", "Successfully signed up!")
                 self.root.destroy()
                 root = tk.Tk()
