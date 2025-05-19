@@ -55,9 +55,9 @@ class Client:
                 print("[Client] Synced DB from server before action")
 
             # 2. Perform action
+            print("command: " +command)
             self._send_command({"command": command, "payload": payload})
             response = self._receive_response()
-            print("command: " +command)
             print(f"[Client] Action response: {response}")
 
             # 3. Push updated DB back to server

@@ -60,7 +60,7 @@ class Server:
                 try:
                     request = json.loads(cipher.decrypt(blob).decode())
                     response = self.route(request)
-                    conn.sendall(cipher.encrypt(json.dumps(response).encode()))
+                    conn.sendall(cipher.encrypt(response.encode()))
                 except Exception as e:
                     err = {"error": str(e)}
                     conn.sendall(cipher.encrypt(json.dumps(err).encode()))
