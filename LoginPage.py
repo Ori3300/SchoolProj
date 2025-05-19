@@ -126,7 +126,7 @@ class LoginPage():
         entered_username = self.username_entry.get().strip()
         entered_password = self.password_entry.get().strip()
         hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
-        self.client.pull_database()
+
 
         if self.number_of_tries < 5:
             # Check if the entered credentials are correct
