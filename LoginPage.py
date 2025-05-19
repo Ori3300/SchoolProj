@@ -9,8 +9,9 @@ from PIL import ImageTk, Image
 import MainPage
 
 class LoginPage():
-    def __init__(self, root):
+    def __init__(self, root, client):
         self.root = root
+        self.client = client
         self.root.title("Login Page")
         self.root.geometry("800x600")
 
@@ -125,20 +126,22 @@ class LoginPage():
         entered_username = self.username_entry.get().strip()
         entered_password = self.password_entry.get().strip()
         hashed_pass = hashlib.sha256(entered_password.encode("utf-8")).hexdigest()
-        print("number of tries: ", self.number_of_tries)
+        self.client.pull_database()
 
         if self.number_of_tries < 5:
             # Check if the entered credentials are correct
             if self.is_password_matches(hashed_pass, entered_username):
                 print("Login successful")
                 messagebox.showinfo("Login Success", "Welcome to the system!")
-                self.root.destroy()
-                root = tk.Tk()
+                
                 data = Db.get_data("Users")
                 for user_id, user_info in data.items():
                     if user_info["password"] == hashed_pass:
-                        id = user_info["id"] 
-                        MainPage.MainPage(root, entered_username, id)
+                        id = user_info["id"]
+                        self.root.destroy()
+                        root = tk.Tk() 
+                        MainPage.MainPage(root, entered_username, id, self.client)
+                        break
             else:
                 messagebox.showerror("Login Failed", "Invalid username or password")
                 self.number_of_tries += 1

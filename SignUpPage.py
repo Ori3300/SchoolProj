@@ -120,10 +120,25 @@ class SignUpPage():
         if not self.is_password_exist(hash_password):
             new_user = User.User(entered_username , hash_password, None)
             new_user.add_user_to_DB()
-            messagebox.showinfo("Sign Up Success", "successfully signed up!")
-            self.root.destroy()
-            root = tk.Tk()
-            LoginPage(root)
+
+            # Send signup request to server
+            response = self.client.send_with_sync({
+                "command": "signup",
+                "payload": {
+                    "username": entered_username,
+                    "password": hash_password
+                }
+            })
+
+            if response["status"] == "success":
+                messagebox.showinfo("Sign Up Success", "Successfully signed up!")
+                self.root.destroy()
+                root = tk.Tk()
+                LoginPage(root, self.client)
+            else:
+                messagebox.showerror("Sign Up Failed", response.get("message", "Unknown error."))
+                self.clear_entries()
+                
         else:
             messagebox.showerror("Sign Up failed","Password is already exist")
             self.clear_entries()        

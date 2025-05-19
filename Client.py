@@ -101,14 +101,15 @@ class Client:
             self.client_socket.close()
             print("[Client] Connection closed")
 
-    def run_gui(self):
+    def run_gui(self, client):
+        """Initialize the GUI and start the main loop."""
         root = tk.Tk()
-        HomePage(root, self)  # Pass self to HomePage so GUI can call send_with_sync
+        HomePage(root, client)
         root.mainloop()
 
 
 if __name__ == "__main__":
-    client = Client('192.168.2.35')  # Change to your server IP
+    client = Client('192.168.1.204')  # Change to your server IP
     client.connect()
-    client.run_gui()
+    client.run_gui(client)
     client.close()

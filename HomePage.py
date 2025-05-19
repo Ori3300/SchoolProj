@@ -5,10 +5,10 @@ import SignUpPage
 import LoginPage
 
 
-
 class HomePage():
-    def __init__(self, root):
+    def __init__(self, root, client):
         self.root = root
+        self.client = client
         self.root.title("Home Page")
         self.root.geometry("800x600")
 
@@ -59,21 +59,12 @@ class HomePage():
         )
         self.canvas.create_window(500, 300, window=self.login_button)
 
-
     def show_signup_page(self):
         self.root.destroy()
         root = tk.Tk()
-        SignUpPage.SignUpPage(root)
+        SignUpPage.SignUpPage(root, self.client)
 
     def show_login_page(self):
         self.root.destroy()
         root = tk.Tk()
-        LoginPage.LoginPage(root)
-
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    HomePage(root)
-    root.mainloop()
-
+        LoginPage.LoginPage(root, self.client)
