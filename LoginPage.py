@@ -140,7 +140,7 @@ class LoginPage():
                         id = user_info["id"]
                         self.root.destroy()
                         root = tk.Tk() 
-                        MainPage.MainPage(root, entered_username, id, self.client)
+                        MainPage.MainPage(root, self.client, entered_username, id)
                         break
             else:
                 messagebox.showerror("Login Failed", "Invalid username or password")
