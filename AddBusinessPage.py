@@ -79,10 +79,10 @@ class AddBusinessPage:
         # Add business to DB via server
         try:
             # Add the business
-            self.client.send_with_sync({
-                "action": "add_business",
-                "business_data": business.to_dict()
-            })
+            self.client.send_with_sync(
+                "add_business",
+                business.to_dict()
+            )
 
             # Update user's business list
             users_data  = self.client.send_with_sync("fetch_database")["Users"]
@@ -91,11 +91,11 @@ class AddBusinessPage:
                     user_info["businesses"].append(business.get_id())
                     break
 
-            self.client.send_with_sync({
-                "action": "update_data",
-                "table": "Users",
-                "data": users_data
-            })
+            self.client.send_with_sync(
+                "update_data",
+                "Users",
+                users_data
+            )
 
             messagebox.showinfo("Success", "Business added successfully.")
 
