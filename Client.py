@@ -1,130 +1,114 @@
 import socket
 import json
-import tkinter as tk
 from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives import hashes
-
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
+import tkinter as tk
 from HomePage import HomePage
 from DButilities import DButilities
 
+
 class Client:
-    def __init__(self, host='192.168.1.204', port=65432):
+    def __init__(self, host='127.0.0.1', port=65432):
         self.host = host
         self.port = port
-        self.sock = None
-        self.cipher = None
+        self.client_socket = None
+        self.cipher_suite = None
         self.db = DButilities()
 
     def connect(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.host, self.port))
-
-        # 1) Receive server's RSA public key (PEM)
-        pem = b""
-        while True:
-            chunk = self.sock.recv(1024)
-            pem += chunk
-            if b"-----END PUBLIC KEY-----" in pem:
-                break
-
-        public_key = serialization.load_pem_public_key(pem)
-
-        # 2) Generate a fresh Fernet key
-        fernet_key = Fernet.generate_key()
-        self.cipher = Fernet(fernet_key)
-
-        # 3) Encrypt the Fernet key with the server's RSA public key
-        encrypted_key = public_key.encrypt(
-            fernet_key,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
-            )
-        )
-
-        # 4) Send the encrypted Fernet key
-        self.sock.sendall(encrypted_key)
-
-        # 5) Pull initial database
-        self.pull_database()
-        print("[Client] Secure session established and DB pulled.")
-
-    def send_with_sync(self, message_dict):
+        self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            # ⬇️ Step 1: Pull the latest DB from the server
-            self.send_raw({"command": "fetch_database"})
-            data = self.receive_raw()
-            if data:
-                for table, table_data in data.items():
+            self.client_socket.connect((self.host, self.port))
+
+            # Receive server's public RSA key
+            server_public_pem = self.client_socket.recv(2048)
+            server_public_key = serialization.load_pem_public_key(server_public_pem)
+
+            # Generate Fernet key
+            fernet_key = Fernet.generate_key()
+            self.cipher_suite = Fernet(fernet_key)
+
+            # Encrypt Fernet key with server's public RSA key
+            encrypted_key = server_public_key.encrypt(
+                fernet_key,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
+            self.client_socket.sendall(encrypted_key)
+
+        except Exception as e:
+            print(f"[Client] Connection error: {e}")
+
+    def send_with_sync(self, command, payload=None):
+        """Pulls DB, sends command, pushes DB"""
+        try:
+            # 1. Pull database from server
+            self._send_command({"command": "fetch_database"})
+            server_db = self._receive_response()
+            if server_db:
+                for table, table_data in server_db.items():
                     self.db.update_data(table, table_data)
-                print("[Client] Synced local DB with server.")
+                print("[Client] Synced DB from server before action")
 
-            # ⚙️ Step 2: Send the intended command
-            self.send_raw(message_dict)
-            response = self.receive_raw()
+            # 2. Perform action
+            self._send_command({"command": command, "payload": payload})
+            response = self._receive_response()
 
-            # ⬆️ Step 3: Push local DB to server
+            # 3. Push updated DB back to server
             full_data = {
                 "Users": self.db.get_data("Users"),
                 "Businesses": self.db.get_data("Businesses"),
                 "Comments": self.db.get_data("Comments"),
             }
-            self.send_raw({"command": "update_database", "payload": full_data})
-            _ = self.receive_raw()
-            print("[Client] Pushed local DB to server.")
+            self._send_command({"command": "update_database", "payload": full_data})
+            update_response = self._receive_response()
+            if update_response and update_response.get("status") == "success":
+                print("[Client] Successfully pushed DB after action")
+            else:
+                print("[Client] Failed to push DB after action")
 
             return response
+
         except Exception as e:
-            print(f"[Client] send_with_sync error: {e}")
+            print(f"[Client] Error in send_with_sync: {e}")
             return None
 
+    def _send_command(self, message_dict):
+        try:
+            json_data = json.dumps(message_dict)
+            encrypted = self.cipher_suite.encrypt(json_data.encode("utf-8"))
+            self.client_socket.sendall(encrypted)
+        except Exception as e:
+            print(f"[Client] Error sending data: {e}")
 
-    # def pull_database(self):
-    #     self.send({"command": "fetch_database"})
-    #     db = self.receive()
-    #     for table, content in db.items():
-    #         self.db.update_data(table, content)
-
-    # def push_database(self):
-    #     full = {
-    #         "Users":     self.db.get_data("Users"),
-    #         "Businesses":self.db.get_data("Businesses"),
-    #         "Comments":  self.db.get_data("Comments"),
-    #     }
-    #     self.send({"command": "update_database", "payload": full})
-    #     resp = self.receive()
-    #     print("[Client] Push DB:", resp.get("status"))
-
-    def send_raw(self, message_dict):
-        json_data = json.dumps(message_dict)
-        encrypted = self.cipher_suite.encrypt(json_data.encode("utf-8"))
-        self.client_socket.sendall(encrypted)
-
-    def receive_raw(self):
-        encrypted_response = self.client_socket.recv(8192)
-        if not encrypted_response:
+    def _receive_response(self):
+        try:
+            encrypted_response = self.client_socket.recv(8192)
+            if not encrypted_response:
+                return None
+            decrypted = self.cipher_suite.decrypt(encrypted_response).decode("utf-8")
+            return json.loads(decrypted)
+        except Exception as e:
+            print(f"[Client] Error receiving data: {e}")
             return None
-        decrypted = self.cipher_suite.decrypt(encrypted_response).decode("utf-8")
-        return json.loads(decrypted)    
-
 
     def close(self):
-        try:
-            self.sock.shutdown(socket.SHUT_RDWR)
-        except: pass
-        self.sock.close()
+        if self.client_socket:
+            self.client_socket.close()
+            print("[Client] Connection closed")
 
     def run_gui(self):
         root = tk.Tk()
-        HomePage(root)
+        HomePage(root, self)  # Pass self to HomePage so GUI can call send_with_sync
         root.mainloop()
 
+
 if __name__ == "__main__":
-    client = Client('192.168.1.204', 65432)
+    client = Client('192.168.2.35')  # Change to your server IP
     client.connect()
     client.run_gui()
-    client.push_database()
     client.close()
