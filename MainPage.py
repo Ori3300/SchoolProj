@@ -74,16 +74,16 @@ class MainPage:
     def show_all_businesses(self):
         """Fetch and display all businesses."""
         try:
-            response = self.client.send_with_sync("fetch_database")["Businesses"]
+            business_data = self.client.send_with_sync("fetch_database")["Businesses"]
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load businesses: {e}")
             return
 
-        businesses = [info for _, info in response.items()]
-        if not businesses:
+        businesses = [info for _, info in business_data.items()]
+        if not business_data:
             self.scrollable_frame.config(height=600)
         else:
-            for business in businesses:
+            for business in business_data.values():
                 self.make_business_frame(business)
 
         self.root.after(100, lambda: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
