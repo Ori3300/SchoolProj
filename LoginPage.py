@@ -106,22 +106,6 @@ class LoginPage():
 
     
 
-    def is_user_exist(self, username):
-        data = data = self.client.send_with_sync("fetch_database", {"name": "Users"})
-        usernames = [user_info["username"] for user_id, user_info in data.items()]
-        print(usernames)
-        # Check if the username exists in the list
-        return username in usernames
-
-    def is_password_matches(self, hashed_pass, username):
-        if self.is_user_exist(username):
-            data = data = self.client.send_with_sync("fetch_database", {"name": "Users"})
-            for user_id, user_info in data.items():
-                if user_info["username"] == username:
-                    return user_info["password"] == hashed_pass
-        else:
-            print("user doesnt exist")
-
     def check_credentials(self):        
         entered_username = self.username_entry.get().strip()
         entered_password = self.password_entry.get().strip()
@@ -148,7 +132,7 @@ class LoginPage():
                 self.number_of_tries += 1
         else:
             messagebox.showerror("Login Failed", "You have exceeded the maximum number of login attempts. Your access has been denied.")
-        self.clear_entries()
+            self.clear_entries()
         
     
     def clear_entries(self):

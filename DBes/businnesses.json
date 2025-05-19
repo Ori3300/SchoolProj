@@ -1,13 +1,3 @@
 {
-    "1": {
-        "id": 1,
-        "name": "ORIOR16",
-        "category": "ORIOR16",
-        "description": "ORIOR16",
-        "location": "TEL AVIV",
-        "owner_name": "ORIOR",
-        "owner_id": 6,
-        "img_b64": "NTAyIEJhZCBHYXRld2F5ClVuYWJsZSB0byByZWFjaCB0aGUgb3JpZ2luIHNlcnZpY2UuIFRoZSBzZXJ2aWNlIG1heSBiZSBkb3duIG9yIGl0IG1heSBub3QgYmUgcmVzcG9uZGluZyB0byB0cmFmZmljIGZyb20gY2xvdWRmbGFyZWQK",
-        "comments": []
-    }
+    
 }
