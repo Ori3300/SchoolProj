@@ -47,6 +47,7 @@ class Client:
         try:
             
             print("command: " + command)
+            print("payload: " + str(payload))
             self._send_command({"command": command, "payload": payload})
             response = self._receive_response()
             print(f"[Client] Action response: {response}")
