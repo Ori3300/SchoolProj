@@ -35,7 +35,7 @@ class DButilities:
         if not path:
             print(f"Error: Invalid database name {name}.")
             return
-        
+        print(f"Updating {name} database at {path} with data: {data}")
         try:
             with open(path, 'w') as file:
                 json.dump(data, file, indent=4)
