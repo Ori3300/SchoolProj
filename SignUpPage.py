@@ -131,6 +131,7 @@ class SignUpPage():
                 }
             })
 
+            print(f"[Client] Sign Up Response: {response}")
             if response["status"] == "success":
                 messagebox.showinfo("Sign Up Success", "Successfully signed up!")
                 self.root.destroy()
