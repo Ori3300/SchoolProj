@@ -125,11 +125,11 @@ class SignUpPage():
             # Send signup request to server
             response = self.client.send_with_sync
             (
-                "signup",
+                ["signup",
                 {
                     "username": entered_username,
                     "password": hash_password
-                }
+                }]
             )
 
             print(f"[Client] Sign Up Response: {response}")
