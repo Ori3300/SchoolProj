@@ -3,9 +3,10 @@ Db = DButilities.DButilities()
 
 
 class User:
-    def __init__(self ,username, password, businesses):
+    def __init__(self ,username, password, businesses, client):
         last_user_id = 0
-        users_data = Db.get_data(name="Users")
+        self.__client = client
+        users_data = self.__client.send_with_sync("fetch_database")["Users"]
         for _, user_info in users_data.items():
             last_user_id = user_info["id"]
 
@@ -30,11 +31,11 @@ class User:
 
     def add_user_to_DB(self):
         user = self.to_dict()
-        data = Db.get_data(name="Users")
+        data = self.__client.send_with_sync("fetch_database")["Users"]
         data[len(data)+1] = user
         Db.update_data(name="Users", data=data)
     def remove_user_from_DB(self):
-        data = Db.get_data(name="Users")
+        data = self.__client.send_with_sync("fetch_database")["Users"]
         for id in list(data.keys()):
             if data[id]["id"] == self.__id:
                 del data[id]

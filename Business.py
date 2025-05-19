@@ -4,9 +4,10 @@ import requests
 import os
 
 class Business:
-    def __init__(self, name, category, description, location, owner_name ,owner_id, comments):
+    def __init__(self, name, category, description, location, owner_name ,owner_id, comments, client):
+        self.__client = client
         last_business_id = 0
-        business_data = Db.get_data(name="Businesses")
+        business_data = self.__client.send_with_sync("fetch_database")["Businesses"]
         for _, business_info in business_data.items():
             last_business_id = business_info["id"]
 
@@ -72,13 +73,13 @@ class Business:
     def add_business_to_DB(self):
         Business = self.to_dict()
         last_business_id = 0
-        data = Db.get_data(name="Businesses")
+        data = self.__client.send_with_sync("fetch_database")["Businesses"]
         for Business_id, _ in data.items():
             last_business_id = int(Business_id)
         data[last_business_id+1] = Business
         Db.update_data(name="Businesses", data=data)
     def remove_business_from_DB(self):
-        data = Db.get_data(name="Businesses")
+        data = self.__client.send_with_sync("fetch_database")["Businesses"]
         for id in list(data.keys()):
             if data[id]["id"] == self.__id:
                 del data[id]

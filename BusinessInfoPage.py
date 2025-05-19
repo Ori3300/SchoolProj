@@ -89,11 +89,11 @@ class BusinessInfoPage:
                 return
 
             # Create Comment and add to DB
-            comment1 = Comment.Comment(self.username_user, content=given_comment)
+            comment1 = Comment.Comment(self.username_user, content=given_comment, client=self.client)
             comment1.add_comment_to_DB(self.client)
 
             # Update Businesses table
-            business_data = self.client.send_with_sync("GET Businesses")
+            business_data = self.client.send_with_sync("fetch_database")["Businesses"]
             for _, business_info in business_data.items():
                 if business_info['id'] == self.business['id']:
                     if comment1.get_id() not in business_info['comments']:

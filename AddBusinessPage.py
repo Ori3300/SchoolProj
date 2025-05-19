@@ -73,7 +73,7 @@ class AddBusinessPage:
 
         business = Business.Business(
             business_name, category, description, location,
-            self.username_user, self.id_user, None
+            self.username_user, self.id_user, None, self.client
         )
 
         # Add business to DB via server
