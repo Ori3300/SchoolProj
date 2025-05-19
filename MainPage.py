@@ -94,18 +94,17 @@ class MainPage:
         business_frame.pack(pady=10)
 
         # Load business image
-        business_img_b64 = business.get_img_b64()
-        if business_img_b64:
-            with open(f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg", "wb") as image_file:
-                image_file.write(base64.b64decode(business_img))
-
-
         image_path = f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg"
         if os.path.exists(image_path):
             business_img = Image.open(image_path)
         else:
-            print("photo path does not exist")
-            business_img = Image.open("Pic\\default.jpg")
+            business_img_b64 = business["img_b64"]
+            business_img = base64.b64decode(business_img_b64)
+            directory = f'Pic\\business{business['id']}_{business['name']}'
+            os.makedirs(directory, exist_ok=True)
+            with open(f"Pic\\business{business['id']}_{business['name']}\\ai_image.jpg", "wb") as image_file:
+                image_file.write(base64.b64decode(business_img))
+            business_img = Image.open(image_path)
 
         business_img = business_img.resize((600, 150))
         business_photo = ImageTk.PhotoImage(business_img)

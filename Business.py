@@ -46,7 +46,6 @@ class Business:
     def get_comments(self):
         return self.__comments
     def get_img_b64(self):
-
         return self.__img_b64
 
     def generate_ai_image(self):
