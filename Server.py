@@ -57,21 +57,21 @@ class Server:
                 if not blob:
                     break
 
-                try:
-                    decrypted_blob = cipher.decrypt(blob)
-                    print(f"[Server] Received encrypted blob: {blob}")
-                    decoded_blob = decrypted_blob.decode()
-                    print(f"[Server] Decrypted blob: {decoded_blob}")
-                    request = json.loads(decoded_blob)
-                    print(f"[Server] Received request: {request}")
+                #try:
+                decrypted_blob = cipher.decrypt(blob)
+                print(f"[Server] Received encrypted blob: {blob}")
+                decoded_blob = decrypted_blob.decode()
+                print(f"[Server] Decrypted blob: {decoded_blob}")
+                request = json.loads(decoded_blob)
+                print(f"[Server] Received request: {request}")
 
-                    #request = json.loads(cipher.decrypt(blob).decode())
-                    print(f"[Server] Received request: {request}")
-                    response = self.route(request)
-                    conn.sendall(cipher.encrypt(json.dumps(response).encode()))
-                except Exception as e:
-                    err = {"error": str(e)}
-                    conn.sendall(cipher.encrypt(json.dumps(err).encode()))
+                #request = json.loads(cipher.decrypt(blob).decode())
+                print(f"[Server] Received request: {request}")
+                response = self.route(request)
+                conn.sendall(cipher.encrypt(json.dumps(response).encode()))
+                # except Exception as e:
+                #     err = {"error": str(e)}
+                #     conn.sendall(cipher.encrypt(json.dumps(err).encode()))
 
         finally:
             conn.close()
