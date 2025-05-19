@@ -8,6 +8,7 @@ class Business:
     def __init__(self, name, category, description, location, owner_name ,owner_id, comments, client):
         self.__client = client
         last_business_id = 0
+        self.__img_b64 = None
         business_data = self.__client.send_with_sync("fetch_database")["Businesses"]
         for _, business_info in business_data.items():
             last_business_id = business_info["id"]
@@ -45,10 +46,8 @@ class Business:
     def get_comments(self):
         return self.__comments
     def get_img_b64(self):
-        with open(f"Pic\\business{self.__id}_{self.__name}\\ai_image.jpg", "rb") as image_file:
-            img_bytes = image_file.read()
-        img_b64 = base64.b64encode(img_bytes).decode('utf-8')
-        return img_b64
+
+        return self.__img_b64
 
     def generate_ai_image(self):
        # Image details
@@ -106,7 +105,7 @@ class Business:
 
         with open(f"Pic\\business{self.__id}_{self.__name}\\ai_image.jpg", "rb") as image_file:
             img_bytes = image_file.read()
-        img_b64 = base64.b64encode(img_bytes).decode('utf-8')
+        self.__img_b64 = base64.b64encode(img_bytes).decode('utf-8')
         
         return {
             "id": self.__id,
@@ -117,7 +116,7 @@ class Business:
             "owner_name": self.__owner_name,
             "owner_id": self.__owner_id,
             "comments": temp,
-            "picture": img_b64
+            "picture": self.__img_b64
         }
 
 
