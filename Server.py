@@ -74,13 +74,13 @@ class Server:
         pl  = data.get("payload")
 
         if cmd == "signup":
-            users = self.db.get_data("Users")
-            if any(u["username"] == pl["username"] for u in users.values()):
+            users_data = self.db.get_data("Users")
+            if any(u["username"] == pl["username"] for u in users_data.values()):
                 return {"status": "fail", "message": "Username exists"}
-            uid = str(len(users)+1)
-            users[uid] = {"id":uid, **pl, "businesses":[]}
-            print(users)
-            self.db.update_data("Users", data=users)
+            uid = str(len(users_data)+1)
+            users_data[uid] = {"id":uid, **pl, "businesses":[]}
+            print(users_data)
+            self.db.update_data(name="Users", data=users_data)
             return {"status":"success"}
 
         if cmd == "login":
