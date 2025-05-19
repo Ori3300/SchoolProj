@@ -73,6 +73,10 @@ class Server:
         cmd = data.get("command")
         pl  = data.get("payload")
 
+        print(f"[Server] Received command: {cmd} with payload: {pl}")
+
+
+
         if cmd == "signup":
             users_data = self.db.get_data("Users")
             if any(u["username"] == pl["username"] for u in users_data.values()):

@@ -120,10 +120,10 @@ class MainPage:
         img_label = tk.Label(business_frame, image=business_photo)
         img_label.pack()
 
-        business_name_label = tk.Label(business_frame, text=business["name"], font=self.label_font, fg="black", bg="white")
+        business_name_label = tk.Label(business_frame, text=business_name, font=self.label_font, fg="black", bg="white")
         business_name_label.pack()
 
-        owner_name = tk.Label(business_frame, text=f"Owner: {business['owner_name']}", font=self.button_font, fg="black", bg="white")
+        owner_name = tk.Label(business_frame, text=f"Owner: {business_owner_name}", font=self.button_font, fg="black", bg="white")
         owner_name.pack()
 
         business_info_button = tk.Button(business_frame, text="Business Info", font=self.button_font, bg="lightgray", command=lambda: self.business_button(business, business_img))
