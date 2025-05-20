@@ -14,7 +14,6 @@ class BusinessInfoPage:
         self.username_user = username_user
         self.id_user = id_user
         self.client = client
-        print(type(business_img))
         self.business_img = business_img.resize((200, 150))
         self.business_photo = ImageTk.PhotoImage(self.business_img)
 
@@ -90,7 +89,7 @@ class BusinessInfoPage:
 
             # Create Comment and add to DB
             comment1 = Comment.Comment(self.username_user, content=given_comment, client=self.client)
-            comment1.add_comment_to_DB(self.client)
+            comment1.add_comment_to_DB()
 
             # Update Businesses table
             business_data = self.client.send_with_sync("fetch_database", {"name": "Businesses"})
@@ -109,7 +108,7 @@ class BusinessInfoPage:
     def load_comments(self):
         self.comments_listbox.delete(0, tk.END)
 
-        business_data = self.client.send_with_sync("GET Businesses")
+        business_data = self.client.send_with_sync("fetch_database", {"name": "Businesses"})
         comments_id = []
         for _, business_info in business_data.items():
             if business_info["id"] == self.business["id"]:
