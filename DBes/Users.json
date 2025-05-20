@@ -28,6 +28,8 @@
         "username": "BB",
         "password": "fc686c314491e1f68bf1899fc54b2327353c44dd1ab4ed56538ef623edd1e866",
         "businesses": [
+            1,
+            1,
             1
         ]
     },
@@ -36,5 +38,29 @@
         "username": "ORIOR",
         "password": "67e70dbf52d1b8e36d3e5e3093953b8b728b76d08524052b7faf7b0bebda9048",
         "businesses": []
+    },
+    "7": {
+        "id": 7,
+        "username": "Shimshon123",
+        "password": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225",
+        "businesses": []
+    },
+    "8": {
+        "id": 8,
+        "username": "MARKURBERG",
+        "password": "dea23424236afda1eda93bd0122b3ff552d939a875c7c085a08ec822d6e2b4f3",
+        "businesses": [
+            2,
+            3,
+            4
+        ]
+    },
+    "9": {
+        "id": 9,
+        "username": "DANY&BENY",
+        "password": "5f0e8c916ca79fc7d7c003dc350084bb2da996be23ec2a61bb2b11bad348ee78",
+        "businesses": [
+            5
+        ]
     }
 }

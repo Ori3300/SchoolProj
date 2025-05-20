@@ -1,1 +1,57 @@
-{}
+{
+    "1": {
+        "id": 1,
+        "name": "PRIME MINISTER'S OFFICE",
+        "category": "GOVERNMENTAL OFFICE",
+        "description": "THE HIGHEST IN THE CHAIN",
+        "location": "JERUSALEM",
+        "owner_name": "BB",
+        "owner_id": 5,
+        "img_url": "https://pollinations.ai/p/GOVERNMENTAL OFFICE?width=1024&height=1024&seed=1&model=flux",
+        "comments": []
+    },
+    "2": {
+        "id": 2,
+        "name": "FACEBOOK",
+        "category": "SOCIAL APP",
+        "description": "THE OLDEST AND DEFINATLLY NOT THE BEST SOCIAL APP EVER",
+        "location": "SILLICON VALLY",
+        "owner_name": "MARKURBERG",
+        "owner_id": 8,
+        "img_url": "https://pollinations.ai/p/SOCIAL APP?width=1024&height=1024&seed=1&model=flux",
+        "comments": []
+    },
+    "3": {
+        "id": 3,
+        "name": "WHATSAPP",
+        "category": "SOCIAL APP",
+        "description": "THE BEST CHATTING APP",
+        "location": "SILLICON VALLY",
+        "owner_name": "MARKURBERG",
+        "owner_id": 8,
+        "img_url": "https://pollinations.ai/p/SOCIAL APP?width=1024&height=1024&seed=1&model=flux",
+        "comments": []
+    },
+    "4": {
+        "id": 4,
+        "name": "OCULUS",
+        "category": "VR",
+        "description": "THE TOP SELLING (PROBABLLY) VR COMPANY",
+        "location": "SILLICON VALLY",
+        "owner_name": "MARKURBERG",
+        "owner_id": 8,
+        "img_url": "https://pollinations.ai/p/VR?width=1024&height=1024&seed=1&model=flux",
+        "comments": []
+    },
+    "5": {
+        "id": 5,
+        "name": "DANY VEBENY",
+        "category": "SCHOOL PRODUCTS SHOP",
+        "description": "THE GOOD OLD NOSTALGIC SCHOOL PRODUCTS SHOP",
+        "location": "RAMAT GAN",
+        "owner_name": "DANY&BENY",
+        "owner_id": 9,
+        "img_url": "https://pollinations.ai/p/SCHOOL PRODUCTS SHOP?width=1024&height=1024&seed=1&model=flux",
+        "comments": []
+    }
+}
