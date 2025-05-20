@@ -124,8 +124,8 @@ class Server:
             if to_del:
                 del bs[to_del]
                 self.db.update_data("Businesses", bs)
-                for cid,v in cm.items():
-                    if v["business_id"]==int(to_del):
+                for cid in list(cm.keys()):
+                    if cm[cid]["business_id"]==int(to_del):
                         del cm[cid]
                 self.db.update_data("Comments", cm)
                 for uid, u in us.items():
