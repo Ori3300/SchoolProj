@@ -51,6 +51,9 @@ class RemoveBusinessPage:
             messagebox.showerror("Error", "Business not found")
             return
 
+        self.client.send_with_sync("remove_business", {"name": name, "owner_id": self.id_user})
+
+
         # Locate business ID
         business_id = None
         for b_id, b_info in self.business_data.items():
@@ -70,38 +73,9 @@ class RemoveBusinessPage:
         except Exception as e:
             print(f"Error removing image folder: {e}")
 
-        # Remove comments
-        comments_data = self.client.send_with_sync("fetch_database", {"name": "Comments"})
-        business_comments = self.business_data[business_id].get("comments", [])
-        for comment_id in list(comments_data.keys()):
-            if comments_data[comment_id]["id"] in business_comments:
-                del comments_data[comment_id]
-        self.client.send_with_sync({
-            "action": "update_data",
-            "table": "Comments",
-            "data": comments_data
-        })
+        
 
-        # Update user's business list
-        users_data = self.client.send_with_sync("fetch_database", {"name": "Users"})
-        for user_info in users_data.values():
-            if user_info["id"] == self.id_user:
-                if int(business_id) in user_info["businesses"]:
-                    user_info["businesses"].remove(int(business_id))
-                break
-        self.client.send_with_sync({
-            "action": "update_data",
-            "table": "Users",
-            "data": users_data
-        })
-
-        # Delete business
-        del self.business_data[business_id]
-        self.client.send_with_sync({
-            "action": "update_data",
-            "table": "Businesses",
-            "data": self.business_data
-        })
+        
 
         self.businesses.remove(name)
         self.canvas.itemconfig(self.list_label, text=self.get_business_list())

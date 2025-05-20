@@ -129,12 +129,13 @@ class Server:
             name, oid = pl["name"], pl["owner_id"]
             to_del = next((k for k,v in bs.items() if v["name"]==name and v["owner_id"]==oid), None)
             if to_del:
-                del bs[to_del]; self.db.update_data("Businesses", bs)
+                del bs[to_del]
+                self.db.update_data("Businesses", bs)
                 for cid,v in list(cm.items()):
                     if v["business_id"]==to_del:
                         del cm[cid]
                 self.db.update_data("Comments", cm)
-                us[oid]["businesses"].remove(name)
+                us[oid]["businesses"].remove(to_del)
                 self.db.update_data("Users", us)
                 return {"status":"success"}
             return {"status":"fail","message":"Not found"}
