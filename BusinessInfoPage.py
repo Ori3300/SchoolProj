@@ -122,7 +122,7 @@ class BusinessInfoPage:
         from MainPage import MainPage
         self.root.destroy()
         root = tk.Tk()
-        MainPage(root, self.username_user, self.id_user, self.client)
+        MainPage(root,username_user= self.username_user,id_user= self.id_user,client= self.client)
 
     def refresh_comment_action(self):
         self.load_comments()

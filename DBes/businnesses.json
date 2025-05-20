@@ -9,7 +9,8 @@
         "owner_id": 5,
         "img_url": "https://pollinations.ai/p/TEST8?width=1024&height=1024&seed=1&model=flux",
         "comments": [
-            1
+            1,
+            2
         ]
     }
 }
