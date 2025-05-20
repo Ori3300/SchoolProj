@@ -110,7 +110,6 @@ class BusinessInfoPage:
 
         business_data = self.client.send_with_sync("fetch_database", {"name": "Businesses"})
         comments_id = []
-        print(f"")
         for _, business_info in business_data.items():
             print(f"business_info type: {type(business_info)}")
             print(f"self.business type: {type(self.business)}")
@@ -119,6 +118,7 @@ class BusinessInfoPage:
                 break
 
         comment_data = self.client.send_with_sync("fetch_database", {"name": "Comments"})
+        print(f"comment_data: {comment_data}")
         if comment_data != {}:
             self.comments = [comment_info for _, comment_info in comment_data.items() if comment_info["id"] in comments_id]
             for comment in self.comments:
