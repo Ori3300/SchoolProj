@@ -145,7 +145,7 @@ class Server:
             bs = self.db.get_data("Businesses")
             for bid, b in bs.items():
                 if b["id"]==pl["business_id"]:
-                    b["comments"].append(cid)
+                    b["comments"].append(int(cid))
                     break
             self.db.update_data("Businesses", bs)
             return {"status":"success"}

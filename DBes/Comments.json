@@ -3,5 +3,11 @@
         "id": 1,
         "username": "BB",
         "content": "TEST COMMENT 9"
+    },
+    "2": {
+        "id": 2,
+        "username": "BB",
+        "content": "TEST COMMENT 10",
+        "business_id": 1
     }
 }

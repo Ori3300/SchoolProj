@@ -8,6 +8,8 @@
         "owner_name": "BB",
         "owner_id": 5,
         "img_url": "https://pollinations.ai/p/TEST8?width=1024&height=1024&seed=1&model=flux",
-        "comments": []
+        "comments": [
+            "2"
+        ]
     }
 }
