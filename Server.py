@@ -114,9 +114,12 @@ class Server:
             bs[bid] = {"id":bid, "name": pl['name'],"category": pl["category"], "description": pl["description"], "location": pl["location"], "owner_name": pl["owner_name"], "owner_id": pl["owner_id"], "img_url": pl["img_url"],  "comments":[]}
             self.db.update_data("Businesses", bs)
             # link to user
-            us = self.db.get_data("Users")
-            us[pl["owner_id"]]["businesses"].append(int(bid))
-            self.db.update_data("Users", us)
+            user_data = self.db.get_data("Users")
+            for uid, u in user_data.items():
+                if u["id"]==pl["owner_id"]:
+                    u["businesses"].append(bid)
+                    break
+            self.db.update_data("Users", user_data)
             return {"status":"success"}
 
         if cmd == "remove_business":
