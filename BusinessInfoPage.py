@@ -14,7 +14,7 @@ class BusinessInfoPage:
         self.username_user = username_user
         self.id_user = id_user
         self.client = client
-        
+        print(type(business_img))
         self.business_img = business_img.resize((200, 150))
         self.business_photo = ImageTk.PhotoImage(self.business_img)
 
