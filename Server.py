@@ -127,6 +127,7 @@ class Server:
             cm = self.db.get_data("Comments")
             us = self.db.get_data("Users")
             name, oid = pl["name"], pl["owner_id"]
+            print(f"remove business: {name} ,{oid}")
             to_del = next((k for k,v in bs.items() if v["name"]==name and v["owner_id"]==oid), None)
             if to_del:
                 del bs[to_del]

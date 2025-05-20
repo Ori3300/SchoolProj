@@ -1,13 +1,1 @@
-{
-    "1": {
-        "id": 1,
-        "name": "TEST2",
-        "category": "TEST2",
-        "description": "TEST2",
-        "location": "TEL AVIV",
-        "owner_name": "BB",
-        "owner_id": 5,
-        "img_url": "https://pollinations.ai/p/TEST2?width=1024&height=1024&seed=1&model=flux",
-        "comments": []
-    }
-}
+{}
