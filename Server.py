@@ -138,7 +138,7 @@ class Server:
 
         if cmd == "add_comment":
             cm = self.db.get_data("Comments")
-            cid = str(len(cm)+1)
+            cid = str(pl["id"])
             cm[cid] = {"id":cid, **pl}
             self.db.update_data("Comments", cm)
             # attach to business
