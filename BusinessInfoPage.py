@@ -89,7 +89,9 @@ class BusinessInfoPage:
 
             # Create Comment and add to DB
             comment1 = Comment.Comment(self.username_user, content=given_comment, client=self.client)
-            self.client.send_with_sync("add_comment", comment1.to_dict())
+            payload = comment1.to_dict()
+            payload["business_id"] = self.business["id"]
+            self.client.send_with_sync("add_comment", payload)
 
           
             # Update UI

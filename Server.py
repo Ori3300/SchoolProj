@@ -143,7 +143,10 @@ class Server:
             self.db.update_data("Comments", cm)
             # attach to business
             bs = self.db.get_data("Businesses")
-            bs[pl["business_id"]]["comments"].append(cid)
+            for bid, b in bs.items():
+                if b["id"]==pl["business_id"]:
+                    b["comments"].append(cid)
+                    break
             self.db.update_data("Businesses", bs)
             return {"status":"success"}
 
