@@ -136,7 +136,10 @@ class Server:
                     if v["business_id"]==to_del:
                         del cm[cid]
                 self.db.update_data("Comments", cm)
-                us[oid]["businesses"].remove(to_del)
+                for uid, u in us.items():
+                    if u["id"]==oid:
+                        u["businesses"].remove(to_del)
+                        break
                 self.db.update_data("Users", us)
                 return {"status":"success"}
             return {"status":"fail","message":"Not found"}
