@@ -44,6 +44,7 @@ class Client:
             print(f"[Client] Connection error: {e}")
 
     def send_with_sync(self, command, payload=None):
+        "TODO:look at the first solution (not the second one) by the chat and update where you need to beyond what he sent to you"
         try:
             
             print("command: " + command)
