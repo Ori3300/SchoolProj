@@ -119,10 +119,10 @@ class BusinessInfoPage:
                 break
 
         comment_data = self.client.send_with_sync("fetch_database", {"name": "Comments"})
-        self.comments = [comment_info for _, comment_info in comment_data.items() if comment_info["id"] in comments_id]
-
-        for comment in self.comments:
-            self.comments_listbox.insert(tk.END, f"{comment['username']}: {comment['content']}")
+        if comment_data != {}:
+            self.comments = [comment_info for _, comment_info in comment_data.items() if comment_info["id"] in comments_id]
+            for comment in self.comments:
+                self.comments_listbox.insert(tk.END, f"{comment['username']}: {comment['content']}")
 
     def go_back(self):
         from MainPage import MainPage
