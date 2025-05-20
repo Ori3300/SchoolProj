@@ -144,7 +144,7 @@ class LoginPage():
         self.root.destroy()
         root = tk.Tk()
         from HomePage import HomePage
-        HomePage(root)
+        HomePage(root, self.client)
 
 
 
