@@ -110,7 +110,10 @@ class BusinessInfoPage:
 
         business_data = self.client.send_with_sync("fetch_database", {"name": "Businesses"})
         comments_id = []
+        print(f"")
         for _, business_info in business_data.items():
+            print(f"business_info type: {type(business_info)}")
+            print(f"self.business type: {type(self.business)}")
             if business_info["id"] == self.business["id"]:
                 comments_id = business_info.get("comments", [])
                 break
