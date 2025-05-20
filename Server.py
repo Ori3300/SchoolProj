@@ -59,14 +59,10 @@ class Server:
 
                 #try:
                 decrypted_blob = cipher.decrypt(blob)
-                print(f"[Server] Received encrypted blob: {blob}")
                 decoded_blob = decrypted_blob.decode()
-                print(f"[Server] Decrypted blob: {decoded_blob}")
                 request = json.loads(decoded_blob)
-                print(f"[Server] Received request: {request}")
 
                 #request = json.loads(cipher.decrypt(blob).decode())
-                print(f"[Server] Received request: {request}")
                 response = self.route(request)
                 conn.sendall(cipher.encrypt(json.dumps(response).encode()))
                 # except Exception as e:
@@ -81,8 +77,6 @@ class Server:
         cmd = data.get("command")
         pl  = data.get("payload")
 
-
-        print(f"[Server] ROUTE: cmd={cmd!r}, payload type={type(pl)} payload={pl!r}")
 
 
 
@@ -108,7 +102,6 @@ class Server:
             return self.db.get_data("Businesses")
 
         if cmd == "add_business":
-            print("add business inininin")
             bs = self.db.get_data("Businesses")
             bid = len(bs)+1
             bs[bid] = {"id":bid, "name": pl['name'],"category": pl["category"], "description": pl["description"], "location": pl["location"], "owner_name": pl["owner_name"], "owner_id": pl["owner_id"], "img_url": pl["img_url"],  "comments":[]}
@@ -127,7 +120,6 @@ class Server:
             cm = self.db.get_data("Comments")
             us = self.db.get_data("Users")
             name, oid = pl["name"], pl["owner_id"]
-            print(f"remove business: {name} ,{oid}")
             to_del = next((k for k,v in bs.items() if v["name"]==name and v["owner_id"]==oid), None)
             if to_del:
                 del bs[to_del]
@@ -138,7 +130,7 @@ class Server:
                 self.db.update_data("Comments", cm)
                 for uid, u in us.items():
                     if u["id"]==oid:
-                        u["businesses"].remove(to_del)
+                        u["businesses"].remove(int(to_del))
                         break
                 self.db.update_data("Users", us)
                 return {"status":"success"}

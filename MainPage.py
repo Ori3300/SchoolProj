@@ -151,6 +151,7 @@ class MainPage:
         from BusinessInfoPage import BusinessInfoPage
         self.root.destroy()
         root = tk.Tk()
+        print(type(business_img))
         BusinessInfoPage(root, self.client, self.username_user, self.id_user, business, business_img)
 
     def refresh_action(self):
