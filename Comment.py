@@ -2,7 +2,7 @@ import DButilities
 Db = DButilities.DButilities()
 
 class Comment:
-    def __init__(self,user_name, content, client):
+    def __init__(self,user_name, content,business_id, client):
         self.__client = client
         last_comment_id = 0
         comment_data = self.__client.send_with_sync("fetch_database", {"name": "Comments"})
@@ -11,6 +11,7 @@ class Comment:
         self.__id = last_comment_id + 1
         self.__username = user_name
         self.__content = content
+        self.__business_id = business_id
 
 
     def get_id(self):
@@ -42,7 +43,8 @@ class Comment:
         return {
             "id": self.__id,
             "username": self.__username,
-            "content": self.__content
+            "content": self.__content,
+            "business_id": self.__business_id  
         }
     def __str__(self):
         return (

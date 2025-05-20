@@ -86,12 +86,12 @@ class BusinessInfoPage:
             if len(given_comment) > 500:
                 messagebox.showerror("Error", "Comment is too long! Max 500 characters.")
                 return
+            
+            business_id = self.business["id"]
 
             # Create Comment and add to DB
-            comment1 = Comment.Comment(self.username_user, content=given_comment, client=self.client)
-            payload = comment1.to_dict()
-            payload["business_id"] = self.business["id"]
-            self.client.send_with_sync("add_comment", payload)
+            comment1 = Comment.Comment(self.username_user, content=given_comment, business_id=business_id , client=self.client)
+            self.client.send_with_sync("add_comment", comment1.to_dict())
 
           
             # Update UI
