@@ -125,6 +125,8 @@ class Server:
                 del bs[to_del]
                 self.db.update_data("Businesses", bs)
                 for cid,v in cm.items():
+                    print(type(v["business_id"]))
+                    print(type(to_del))
                     if v["business_id"]==to_del:
                         del cm[cid]
                 self.db.update_data("Comments", cm)
