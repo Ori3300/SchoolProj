@@ -115,10 +115,10 @@ class BusinessInfoPage:
             print(f"business_info type: {type(business_info)}")
             print(f"self.business type: {type(self.business)}")
             if business_info["id"] == self.business["id"]:
-                comments_id = business_info.get("comments", [])
+                comments_id = business_info["comments"]
                 break
 
-        comment_data = self.client.send_with_sync("GET Comments")
+        comment_data = self.client.send_with_sync("fetch_database", {"name": "Comments"})
         self.comments = [comment_info for _, comment_info in comment_data.items() if comment_info["id"] in comments_id]
 
         for comment in self.comments:
